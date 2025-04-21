@@ -3,7 +3,7 @@ build/
 target/
 resources/
 out/
-
+test/
 # IntelliJ IDEA 配置
 .idea/
 *.iml
