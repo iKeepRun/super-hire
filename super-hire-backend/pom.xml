@@ -16,6 +16,7 @@
         <module>api</module>
         <module>service-user</module>
         <module>service-company</module>
+        <module>gateway</module>
     </modules>
 
     <properties>
