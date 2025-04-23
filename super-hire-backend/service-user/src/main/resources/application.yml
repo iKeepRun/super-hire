@@ -1,2 +1,19 @@
 server:
-  port: 7001
+  port: ${port:7001}
+
+spring:
+  application:
+    name: user-service
+#  profiles:
+#    active: dev
+# 配置日志级别
+logging:
+  level:
+    root: info
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml
+  global-config:
+    db-config:
+      id-type: assign_id  # 雪花算法
+    banner: false

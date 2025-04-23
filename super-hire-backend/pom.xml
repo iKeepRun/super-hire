@@ -9,31 +9,51 @@
 
     <name>super-hire-backend</name>
     <url>http://maven.apache.org</url>
+
     <modules>
         <module>common</module>
         <module>pojo</module>
         <module>api</module>
         <module>service-user</module>
         <module>service-company</module>
+        <module>gateway</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
+        <spring-cloud.version>2021.0.4</spring-cloud.version>
     </properties>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.3</version>
+        <version>2.6.11</version>
     </parent>
     <!--父工程只负责依赖管理-->
     <dependencyManagement>
         <dependencies>
+            <!--引入微服务-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--引入alibaba组件-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2021.0.1.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--mysql相关-->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>8.0.30</version>
+                <version>8.0.26</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -45,16 +65,17 @@
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>1.4.6</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver -->
             <dependency>
                 <groupId>org.mongodb</groupId>
-                <artifactId>mongodb-driver-core</artifactId>
+                <artifactId>mongodb-driver</artifactId>
                 <version>3.12.11</version>
             </dependency>
             <!--zookeeper-->
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
-                <version>3.8.2</version>
+                <version>3.8.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.curator</groupId>
@@ -66,14 +87,55 @@
                 <artifactId>curator-recipes</artifactId>
                 <version>5.3.0</version>
             </dependency>
-
+            <!-- jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.10.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.10.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.10.2</version>
+            </dependency>
             <!--百度api-->
             <dependency>
                 <groupId>com.baidu.aip</groupId>
                 <artifactId>java-sdk</artifactId>
-                <version>4.16.8</version>
+
+            </dependency>
+            <!-- apache 工具类 -->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.13</version>
+            </dependency>
             <!--hutool工具类-->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -88,8 +150,8 @@
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-ui</artifactId>
-                <version>2.0.9</version>
+                <artifactId>knife4j-springdoc-ui</artifactId>
+                <version>3.0.3</version>
             </dependency>
             <!--minio-->
             <dependency>
@@ -119,6 +181,13 @@
                 <version>3.8.1</version>
                 <scope>test</scope>
             </dependency>
+
+            <!-- lombok 插件工具 -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -128,7 +197,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

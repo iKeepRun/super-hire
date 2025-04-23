@@ -1,7 +1,8 @@
 # custom
 build/
 target/
-resources/
+generator/
+#resources/
 out/
 test/
 # IntelliJ IDEA 配置
