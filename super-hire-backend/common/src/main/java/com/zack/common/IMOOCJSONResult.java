@@ -3,7 +3,7 @@ package com.zack.common;
 /**
  * 
  * @Title: IMOOCJSONResult.java
- * @Package com.imooc.utils
+ * @Package com.zack.utils
  * @Description: 自定义响应数据结构
  * 				本类可提供给 H5/ios/安卓/公众号/小程序 使用
  * 				前端接受此类数据（json object)后，可自行根据业务去实现相关功能

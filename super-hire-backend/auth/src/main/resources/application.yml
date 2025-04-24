@@ -17,3 +17,9 @@ mybatis-plus:
     db-config:
       id-type: assign_id  # 雪花算法
     banner: false
+
+
+redis:
+  host: ${redis.host:127.0.0.1}
+  port: ${redis.port:16379}
+  database: ${redis.database:0}
