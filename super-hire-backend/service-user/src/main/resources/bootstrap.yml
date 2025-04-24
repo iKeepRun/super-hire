@@ -1,11 +1,10 @@
 spring:
-  application:
-    name: user-service
   cloud:
     nacos:
       config:
         server-addr: 127.0.0.1:18848
-        namespace: ae3ad3e5-3910-4dc7-a5f2-f42621f1c273
+#        namespace: ae3ad3e5-3910-4dc7-a5f2-f42621f1c273
+        namespace: e312127a-3097-400d-9f71-e7a75d4478d6
         group: dev
         name: user-service.yaml
         file-extension: yaml
@@ -14,4 +13,4 @@ spring:
           level: debug
       discovery:
         server-addr: 127.0.0.1:18848
-        service: user
+

@@ -1,16 +1,28 @@
 spring:
   cloud:
-      gateway:
-        discovery:
-          locator:
-            enabled: true                   # 开启从注册中心动态创建路由的功能
-        routes:
-          - id: userRouter
-            uri: lb://user           # lb://表示开启负载均衡 后面根据注册实际名称，没有指定的话就是application.name
-            predicates:
-              - Path=/user/**
+    gateway:
+      discovery:
+        locator:
+          enabled: true                   # 开启从注册中心动态创建路由的功能
+      routes:
+        - id: userRouter
+          uri: lb://user-service           # lb://表示开启负载均衡 后面根据注册实际名称，没有指定的话就是application.name
+          predicates:
+            - Path=/user/**
 
-          - id: companyRouter
-            uri: lb://company
-            predicates:
-              - Path=/company/**
+        - id: companyRouter
+          uri: lb://company-service
+          predicates:
+            - Path=/company/**
+
+        - id: authRouter
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            allowCredentials: true

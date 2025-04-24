@@ -6,4 +6,3 @@ spring:
     name: gateway
   profiles:
     active: dev
-
