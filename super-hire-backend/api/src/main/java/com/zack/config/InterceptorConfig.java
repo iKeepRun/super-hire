@@ -14,6 +14,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(smsInteceptor()).addPathPatterns("/auth/getSMSCode");
+        registry.addInterceptor(smsInteceptor()).addPathPatterns("/passport/getSMSCode");
     }
 }
