@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: auth-service
+  redis:
+    host: 172.23.132.99
+    port: 16379
+    database: 0
 #  profiles:
 #    active: dev
 # 配置日志级别
@@ -19,7 +23,4 @@ mybatis-plus:
     banner: false
 
 
-redis:
-  host: ${redis.host:127.0.0.1}
-  port: ${redis.port:16379}
-  database: ${redis.database:0}
+

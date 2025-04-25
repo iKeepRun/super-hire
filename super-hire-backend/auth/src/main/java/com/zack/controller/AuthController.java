@@ -7,6 +7,7 @@ import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.utils.IPUtil;
 import com.zack.utils.RedisOperator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/auth")
+@Slf4j
 public class AuthController {
     @Autowired
     private RedisOperator redisOperator;
@@ -30,6 +32,7 @@ public class AuthController {
                                    HttpServletRequest request){
         ThrowUtil.throwIf(StrUtil.isBlank(mobile), ErrorCode.PARAMS_ERROR);
         String ip = IPUtil.getRequestIp(request);
+        log.info("用户ip:{}",ip);
         // 用于防止频繁的访问短信接口
         redisOperator.setnx60s(ip,mobile);
         //TODO  对接第三方短信平台
