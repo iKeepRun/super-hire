@@ -4,6 +4,7 @@ import com.zack.exceptions.ErrorCode;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Map;
 
 @Data
 public class CommonResult<T> implements Serializable {
@@ -37,5 +38,10 @@ public class CommonResult<T> implements Serializable {
 
     public static <T> CommonResult<T> error(int code,String message){
         return new CommonResult(code,message,false,null);
+    }
+
+
+    public static <T> CommonResult<T> error(Map<String,String> map){
+        return new CommonResult(50001,"操作失败",false,map);
     }
 }
