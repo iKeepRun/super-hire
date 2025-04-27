@@ -1,6 +1,7 @@
 package com.zack.controller;
 import java.util.Date;
 
+import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,6 +9,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zack.common.CommonResult;
 import com.zack.domain.Users;
 import com.zack.dto.LoginDTO;
+import com.zack.enums.Sex;
+import com.zack.enums.ShowWhichName;
+import com.zack.enums.UserRole;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.mapper.UsersMapper;
@@ -64,33 +68,34 @@ public class PassportController {
         Users users = usersMapper.selectOne(new QueryWrapper<Users>().eq("mobile", mobile));
         // 用户不存在，就注册
         if (users == null) {
-            Users user = new Users();
-            user.setMobile(mobile);
-            String name = mobile + "_" + NumberUtil.roundStr(Math.random() * 1000000, 6);
-            user.setNickname(name);
-            user.setReal_name(name);
-            user.setShow_which_name(1);
-            user.setSex(1);
-            user.setFace("");
-            user.setEmail("");
-            user.setBirthday(new Date());
-            user.setCountry("");
-            user.setProvince("");
-            user.setCity("");
-            user.setDistrict("");
-            user.setDescription("");
-            user.setStart_work_date(new Date());
-            user.setPosition("");
-            user.setRole(0);
-            user.setHr_in_which_company_id("");
-            user.setHr_signature("");
-            user.setHr_tags("");
-            user.setCreated_time(new Date());
-            user.setUpdated_time(new Date());
+            users = new Users();
+            String mobilePhone = DesensitizedUtil.mobilePhone(mobile);
+            users.setMobile(mobilePhone);
+            String name = mobilePhone + "_" + NumberUtil.roundStr(Math.random() * 1000000, 6);
+            users.setNickname("昵称:"+mobilePhone);
+            users.setReal_name("真名:"+mobilePhone);
+            users.setShow_which_name(ShowWhichName.nickname.type);
+            users.setSex(Sex.man.type);
+            users.setFace("");
+            users.setEmail("xxx@163.com");
+            users.setBirthday(new Date());
+            users.setCountry("中国");
+            users.setProvince("");
+            users.setCity("");
+            users.setDistrict("");
+            users.setDescription("这家伙喜欢coding,不喜欢说话");
+            users.setStart_work_date(new Date());
+            users.setPosition("底层码农");
+            users.setRole(UserRole.CANDIDATE.type);
+            users.setHr_in_which_company_id("");
+            users.setHr_signature("");
+            users.setHr_tags("");
+            users.setCreated_time(new Date());
+            users.setUpdated_time(new Date());
 
-
+           usersMapper.insert(users);
         }
-        return CommonResult.success();
+        return CommonResult.success(users);
     }
 
 }
