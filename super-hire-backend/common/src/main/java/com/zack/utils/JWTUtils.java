@@ -14,6 +14,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import sun.misc.BASE64Encoder;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
@@ -27,8 +28,13 @@ public class JWTUtils {
     @Autowired
     private JWTProperties jwtProperties;
 
-//    @Value("${jwt.key}")
-//    public String JWT_KEY;
+    @Value("${jwt.key}")
+    public String JWT_KEY;
+
+    @PostConstruct
+    public void init() {
+        log.info("JWT_KEY from nacos: {}", JWT_KEY);
+    }
 
     public String createJWTWithPrefix(String body, Long expireTimes, String prefix) {
         ThrowUtil.throwIf(expireTimes == null, ErrorCode.PARAMS_ERROR);
@@ -51,9 +57,9 @@ public class JWTUtils {
 
     public String dealJWT(String body, Long expireTimes) {
 
-        String userKey = jwtProperties.getKey();
-//        String userKey = JWT_KEY;
-//        log.info("Nacos jwt key = " + JWT_KEY);
+//        String userKey = jwtProperties.getKey();
+        String userKey = JWT_KEY;
+        log.info("Nacos jwt key = " + JWT_KEY);
 
         // 1. 对秘钥进行base64编码
         String base64 = new BASE64Encoder().encode(userKey.getBytes());
@@ -93,9 +99,9 @@ public class JWTUtils {
 
     public String checkJWT(String pendingJWT) {
 
-        String userKey = jwtProperties.getKey();
-//        String userKey = JWT_KEY;
-//        log.info("Nacos jwt key = " + JWT_KEY);
+//        String userKey = jwtProperties.getKey();
+        String userKey = JWT_KEY;
+        log.info("Nacos jwt key = " + JWT_KEY);
 
         // 1. 对秘钥进行base64编码
         String base64 = new BASE64Encoder().encode(userKey.getBytes());

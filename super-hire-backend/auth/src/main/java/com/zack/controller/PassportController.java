@@ -109,6 +109,7 @@ public class PassportController extends BaseInfoProperties {
         usersVO.setUserToken(jwt);
         return CommonResult.success(usersVO);
     }
+
     @PostMapping("logout")
     public CommonResult logout(@RequestParam String userId,
                                   HttpServletRequest request) throws Exception {
