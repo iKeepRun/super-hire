@@ -10,3 +10,4 @@ spring:
           - data-id: jwt_config.yaml
             group: DEFAULT_GROUP
             refresh: true
+
