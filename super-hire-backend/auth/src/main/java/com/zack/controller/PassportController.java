@@ -1,11 +1,15 @@
 package com.zack.controller;
 import java.util.Date;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.google.gson.Gson;
+import com.zack.base.BaseInfoProperties;
 import com.zack.common.CommonResult;
 import com.zack.domain.Users;
 import com.zack.dto.LoginDTO;
@@ -16,7 +20,9 @@ import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.mapper.UsersMapper;
 import com.zack.utils.IPUtil;
+import com.zack.utils.JWTUtils;
 import com.zack.utils.RedisOperator;
+import com.zack.vo.UsersVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +33,10 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/passport")
 @Slf4j
-public class PassportController {
+public class PassportController extends BaseInfoProperties {
+
+    @Autowired
+    private JWTUtils jwtUtils;
     @Autowired
     private RedisOperator redisOperator;
     @Autowired
@@ -71,7 +80,6 @@ public class PassportController {
             users = new Users();
             String mobilePhone = DesensitizedUtil.mobilePhone(mobile);
             users.setMobile(mobilePhone);
-            String name = mobilePhone + "_" + NumberUtil.roundStr(Math.random() * 1000000, 6);
             users.setNickname("昵称:"+mobilePhone);
             users.setReal_name("真名:"+mobilePhone);
             users.setShow_which_name(ShowWhichName.nickname.type);
@@ -95,7 +103,19 @@ public class PassportController {
 
            usersMapper.insert(users);
         }
-        return CommonResult.success(users);
-    }
 
+        String jwt = jwtUtils.createJWTWithPrefix(new Gson().toJson(users), TOKEN_USER_PREFIX);
+        UsersVO usersVO = BeanUtil.copyProperties(users, UsersVO.class);
+        usersVO.setUserToken(jwt);
+        return CommonResult.success(usersVO);
+    }
+    @PostMapping("logout")
+    public CommonResult logout(@RequestParam String userId,
+                                  HttpServletRequest request) throws Exception {
+
+        // 后端只需要清除用户的token信息即可，前端也需要清除相关的用户信息
+//        redis.del(REDIS_USER_TOKEN + ":" + userId);
+
+        return CommonResult.success();
+    }
 }
