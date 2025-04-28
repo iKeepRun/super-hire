@@ -18,7 +18,7 @@ spring:
         - id: authRouter
           uri: lb://auth-service
           predicates:
-            - Path=/auth/**,/passport/**
+            - Path=/auth/**,/passport/**,/saas/**
       globalcors:
         cors-configurations:
           '[/**]':

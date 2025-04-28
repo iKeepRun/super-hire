@@ -16,6 +16,8 @@ import sun.misc.BASE64Encoder;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -121,4 +123,18 @@ public class JWTUtils {
         return body;
     }
 
+//    public static void main(String[] args) {
+//
+//            // 创建一个安全的随机数生成器
+//            SecureRandom secureRandom = new SecureRandom();
+//            byte[] keyBytes = new byte[32]; // 32字节 = 256位
+//            secureRandom.nextBytes(keyBytes);
+//
+//            // 将随机字节转换为Base64编码的字符串
+//            String base64Key = Base64.getEncoder().encodeToString(keyBytes);
+//
+//            // 输出生成的密钥
+//            System.out.println("Generated JWT Key: " + base64Key);
+//
+//    }
 }
