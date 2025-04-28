@@ -8,25 +8,25 @@ import java.util.Map;
 
 @Data
 public class CommonResult<T> implements Serializable {
-    private int code;
+    private int status;
     private String msg;
     private boolean success;
     private T data;
 
 
-    public CommonResult(int code, String msg, Boolean success,T data) {
-        this.code = code;
+    public CommonResult(int status, String msg, Boolean success,T data) {
+        this.status = status;
         this.msg = msg;
         this.success=success;
         this.data = data;
     }
 
     public static <T> CommonResult<T> success(){
-        return new CommonResult(0,"操作成功",true,null);
+        return new CommonResult(200,"操作成功",true,null);
     }
 
     public static <T> CommonResult<T> success(T data){
-        return new CommonResult(0,"操作成功",true,data);
+        return new CommonResult(200,"操作成功",true,data);
     }
 
     public static <T> CommonResult<T> error(ErrorCode errorCode){

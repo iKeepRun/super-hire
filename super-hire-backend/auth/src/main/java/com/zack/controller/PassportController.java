@@ -30,6 +30,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+/**
+ * @description:App端注册登录接口
+ * @param:
+ * @return:
+ **/
 @RestController
 @RequestMapping("/passport")
 @Slf4j
@@ -58,7 +63,7 @@ public class PassportController extends BaseInfoProperties {
     }
 
     @PostMapping("/login")
-    public CommonResult login(@Valid @RequestBody LoginDTO loginDTO,
+    public CommonResult<UsersVO> login(@Valid @RequestBody LoginDTO loginDTO,
                               HttpServletRequest request) {
         String mobile = loginDTO.getMobile();
         String code = loginDTO.getSmsCode();

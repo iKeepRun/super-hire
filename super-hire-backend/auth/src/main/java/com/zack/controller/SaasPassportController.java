@@ -15,18 +15,23 @@ import com.zack.enums.UserRole;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.mapper.UsersMapper;
+import com.zack.service.UsersService;
 import com.zack.utils.IPUtil;
 import com.zack.utils.JWTUtils;
 import com.zack.utils.RedisOperator;
+import com.zack.vo.SaasUserVO;
 import com.zack.vo.UsersVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,7 +47,13 @@ public class SaasPassportController extends BaseInfoProperties {
     private JWTUtils jwtUtils;
     @Autowired
     private RedisOperator redisOperator;
-
+    @Autowired
+    private UsersService usersService;
+    /**
+     * @description: 获得二维码令牌
+     * @param: []
+     * @return: com.zack.common.CommonResult<java.lang.String>
+     **/
     @PostMapping("/getQRToken")
     public CommonResult<String> getQRToken() {
         //生成扫码登陆token
@@ -54,6 +65,11 @@ public class SaasPassportController extends BaseInfoProperties {
         return CommonResult.success(qrToken);
     }
 
+    /**
+     * @description: 手机端使用HR角色进行扫码登陆
+     * @param: [qrToken, request]
+     * @return: com.zack.common.CommonResult<java.lang.String>
+     **/
     @PostMapping("/scanCode")
     public CommonResult<String> scanCode(String qrToken, HttpServletRequest request) {
         // 判空 - qrToken
@@ -88,5 +104,110 @@ public class SaasPassportController extends BaseInfoProperties {
 
         // 返回给手机端，app下次请求携带preToken
         return CommonResult.success(preToken);
+    }
+
+
+
+    /**
+     * 3. SAAS网页端每隔一段时间（3秒）定时查询qrToken是否被读取，用于页面的展示标记判断
+     * 前端处理：限制用户在页面不操作而频繁发起调用：【页面失效，请刷新后再执行扫描登录！】
+     * 注：如果使用websocket或者netty，可以在app扫描之后，在上一个接口，直接通信浏览器（H5）进行页面扫码的状态标记
+     * @param qrToken
+     * @return
+     */
+    @PostMapping("codeHasBeenRead")
+    public CommonResult codeHasBeenRead(String qrToken) {
+
+        String readStr = redis.get(SAAS_PLATFORM_LOGIN_TOKEN_READ + ":" + qrToken);
+        List list = new ArrayList();
+
+        if (StringUtils.isNotBlank(readStr)) {
+            String[] readArr = readStr.split(",");
+            if (readArr.length >= 2) {
+                list.add(Integer.valueOf(readArr[0]));
+                list.add(readArr[1]);
+            } else {
+                list.add(0);
+            }
+            return CommonResult.success(list);
+        } else {
+            return CommonResult.success(list);
+        }
+    }
+
+    /**
+     * 4. 手机端点击却登录，携带preToken与后端进行判断，如果校验ok则登录成功
+     * 注：如果使用websocket或者netty，可以在此直接通信H5进行页面的跳转
+     * @param userId
+     * @param qrToken
+     * @param preToken
+     * @return
+     */
+    @PostMapping("goQRLogin")
+    public CommonResult goQRLogin(String userId,
+                                     String qrToken,
+                                     String preToken) {
+
+        String preTokenRedisArr = redis.get(SAAS_PLATFORM_LOGIN_TOKEN_READ + ":" + qrToken);
+
+        if (StringUtils.isNotBlank(preTokenRedisArr)) {
+            String preTokenRedis = preTokenRedisArr.split(",")[1];
+            if (preTokenRedis.equalsIgnoreCase(preToken)) {
+                // 根据用户id获得用户信息
+                Users hrUser = usersService.getById(userId);
+                if (hrUser == null) {
+                    return CommonResult.error(ErrorCode.USER_NOT_EXIST_ERROR);
+                }
+
+                // 存入用户信息到redis中，因为H5在未登录的情况下，拿不到用户id，所以暂存用户信息到redis。
+                // *如果使用websocket是可以直接通信H5获得用户id，则无此问题
+                redis.set(REDIS_SAAS_USER_INFO + ":temp:" + preToken, new Gson().toJson(hrUser),5*60);
+            }
+        }
+
+        return CommonResult.success();
+    }
+
+    /**
+     * 5. 页面登录跳转
+     * @param preToken
+     * @return
+     */
+    @PostMapping("checkLogin")
+    public CommonResult checkLogin(String preToken) {
+
+        if (StringUtils.isBlank(preToken))
+            return CommonResult.success("");
+
+        // 获得用户临时信息
+        String userJson = redis.get(REDIS_SAAS_USER_INFO + ":temp:" + preToken);
+
+        if (StringUtils.isBlank(userJson))
+            return CommonResult.error(ErrorCode.USER_NOT_EXIST_ERROR);
+
+        // 确认执行登录后，生成saas用户的token，并且长期有效
+        String saasUserToken = jwtUtils.createJWTWithPrefix(userJson, TOKEN_SAAS_PREFIX);
+
+        // 存入用户信息，长期有效
+        redis.set(REDIS_SAAS_USER_INFO + ":" + saasUserToken, userJson);
+
+        return CommonResult.success(saasUserToken);
+    }
+
+    @GetMapping("info")
+    public CommonResult info(String token) {
+
+        String userJson = redis.get(REDIS_SAAS_USER_INFO + ":" + token);
+        Users saasUser = new Gson().fromJson(userJson, Users.class);
+
+        SaasUserVO saasUserVO = new SaasUserVO();
+        BeanUtils.copyProperties(saasUser, saasUserVO);
+
+        return CommonResult.success(saasUserVO);
+    }
+
+    @PostMapping("logout")
+    public CommonResult logout(String token) {
+        return CommonResult.success();
     }
 }
