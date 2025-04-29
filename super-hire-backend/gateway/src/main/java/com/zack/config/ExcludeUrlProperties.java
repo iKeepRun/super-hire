@@ -14,4 +14,6 @@ import java.util.List;
 public class ExcludeUrlProperties {
 
     private List<String> urls;
+
+    private List<String> limitUrls;
 }

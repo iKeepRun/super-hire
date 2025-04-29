@@ -136,7 +136,7 @@ public class SaasPassportController extends BaseInfoProperties {
     }
 
     /**
-     * 4. 手机端点击却登录，携带preToken与后端进行判断，如果校验ok则登录成功
+     * 4. 手机端点击确认登录，携带preToken与后端进行判断，如果校验ok则登录成功
      * 注：如果使用websocket或者netty，可以在此直接通信H5进行页面的跳转
      * @param userId
      * @param qrToken
