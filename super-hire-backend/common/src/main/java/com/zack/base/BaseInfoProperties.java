@@ -140,9 +140,9 @@ public class BaseInfoProperties {
 //        return map;
 //    }
 
-    public CommonPage setPage(List<?> list,
+    public  <T> CommonPage<T>  setPage(List<T> list,
                                            Integer page) {
-        PageInfo<?> pageList = new PageInfo<>(list);
+        PageInfo<T> pageList = new PageInfo<>(list);
         CommonPage commonPage = new CommonPage();
         commonPage.setRows(list);
         commonPage.setPage(page);
