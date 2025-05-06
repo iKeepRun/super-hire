@@ -9,7 +9,7 @@ public class SMSUtils {
 //    @Autowired
 //    private TencentCloudProperties tencentCloudProperties;
 //
-//    public void sendSMS(String phone, String code) throws Exception {
+    public void sendSMS(String phone, String code) throws Exception {
 //        try {
 //            /* 必要步骤：
 //             * 实例化一个认证对象，入参需要传入腾讯云账户密钥对secretId，secretKey。
@@ -53,7 +53,7 @@ public class SMSUtils {
 ////            System.out.println(SendSmsResponse.toJsonString(resp));
 //        } catch (TencentCloudSDKException e) {
 //            System.out.println(e.toString());
-//        }
+        }
 
 }
 
