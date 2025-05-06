@@ -10,7 +10,7 @@ spring:
     host: 127.0.0.1
     port: 5672
     username: ENC(vcVNyPrk4crUSc4IWgwO8Q==)
-    password: ENC(vcVNyPrk4crUSc4IWgwO8Q==）
+    password: ENC(vcVNyPrk4crUSc4IWgwO8Q==)
     virtual-host: /
 
 # 配置日志级别
@@ -26,7 +26,3 @@ mybatis-plus:
     banner: false
 
 
-jasypt:
-  encryptor:
-    algorithm: PBEWithMD5AndDES
-    password: superhire

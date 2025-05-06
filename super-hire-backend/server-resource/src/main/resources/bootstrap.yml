@@ -14,15 +14,13 @@ spring:
           - data-id: db_config.yaml
             group: DEFAULT_GROUP
             refresh: true
+          - data-id: jasypt_config.yaml
+            group: DEFAULT_GROUP
+            refresh: true
         extension-configs:
           - data-id: jwt_config.yaml
             group: DEFAULT_GROUP
             refresh: true
-#        group: dev
-#        name: company-service.yaml
-#        refreshable: true
-#        log:
-#          level: debug
       discovery:
         server-addr: 127.0.0.1:18848
 
