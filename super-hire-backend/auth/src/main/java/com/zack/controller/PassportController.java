@@ -1,13 +1,9 @@
 package com.zack.controller;
-import java.util.Date;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.DesensitizedUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
 import com.zack.common.CommonResult;
@@ -19,16 +15,21 @@ import com.zack.enums.UserRole;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.mapper.UsersMapper;
+import com.zack.mq.MQConfig;
+import com.zack.mq.SMSContentQO;
+import com.zack.utils.GsonUtils;
 import com.zack.utils.IPUtil;
 import com.zack.utils.JWTUtils;
 import com.zack.utils.RedisOperator;
 import com.zack.vo.UsersVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Date;
 
 /**
  * @description:App端注册登录接口
@@ -46,6 +47,8 @@ public class PassportController extends BaseInfoProperties {
     private RedisOperator redisOperator;
     @Autowired
     private UsersMapper usersMapper;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @PostMapping("/getSMSCode")
     public CommonResult getSMSCode(String mobile,
@@ -55,7 +58,13 @@ public class PassportController extends BaseInfoProperties {
         log.info("用户ip:{}", ip);
         // 用于防止频繁的访问短信接口
 //        redisOperator.setnx60s(ip, mobile);
+        SMSContentQO smsContentQO=new SMSContentQO();
+        smsContentQO.setMobile(mobile);
+        smsContentQO.setContent("1234");
         //TODO  对接第三方短信平台
+          //使用mq异步解耦短信发送
+        rabbitTemplate.convertAndSend(MQConfig.EXCHANGE_NAME,MQConfig.ROUTING_KEY, GsonUtils.object2String(smsContentQO));
+
         //存储手机验证码
         redisOperator.set(mobile, "1234", 60L);
 

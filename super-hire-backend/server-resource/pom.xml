@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>auth</artifactId>
+    <artifactId>server-resource</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -24,10 +24,5 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-amqp</artifactId>-->
-<!--        </dependency>-->
     </dependencies>
-
 </project>
