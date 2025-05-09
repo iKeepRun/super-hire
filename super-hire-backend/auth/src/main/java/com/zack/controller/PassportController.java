@@ -62,6 +62,25 @@ public class PassportController extends BaseInfoProperties {
         smsContentQO.setMobile(mobile);
         smsContentQO.setContent("1234");
         //TODO  对接第三方短信平台
+        //添加confirm回调函数
+        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
+            // log.info("correlationData",correlationData.getId());
+            if(ack){
+                log.info("交换机成功接收到消息",cause);
+            }else{
+                log.info("交换机接收消息失败",cause);
+            }
+        });
+        //添加return回调函数
+        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
+            log.info("消息从交换机到队列失败,消息内容:{}",new String(message.getBody()));
+            log.info("replyCode:{}",replyCode);
+            log.info("replyText:{}",replyText);
+            log.info("exchange:{}",exchange);
+            log.info("routingKey:{}",routingKey);
+
+        });
+
           //使用mq异步解耦短信发送
         rabbitTemplate.convertAndSend(MQConfig.EXCHANGE_NAME,MQConfig.ROUTING_KEY, GsonUtils.object2String(smsContentQO));
 

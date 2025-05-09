@@ -17,6 +17,8 @@ spring:
     username: guest
     password: guest
     virtual-host: /
+    publisher-confirm-type: correlated
+    publisher-returns: true
 
 # 配置日志级别
 logging:

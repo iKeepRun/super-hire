@@ -1,6 +1,7 @@
 package com.zack.mq;
 
 import com.google.gson.JsonObject;
+import com.rabbitmq.client.Channel;
 import com.zack.utils.GsonUtils;
 import com.zack.utils.SMSUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,8 @@ public class MQSMSConsumer {
     @Autowired
     private SMSUtils smsUtils;
 
-
     @RabbitListener(queues = {MQConfig.QUEUE_NAME})
-    public void receive(String payload, Message message) throws Exception {
+    public void receive(String payload, Message message, Channel channel) throws Exception {
         //获取routerkey
         String routingKey = message.getMessageProperties().getReceivedRoutingKey();
 
@@ -27,5 +27,7 @@ public class MQSMSConsumer {
             //TODO 发送短信(空方法，自实现)
             smsUtils.sendSMS(smsContentQO.getMobile(), smsContentQO.getContent());
         }
+
+
     }
 }

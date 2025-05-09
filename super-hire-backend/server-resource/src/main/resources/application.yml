@@ -12,6 +12,9 @@ spring:
     username: ENC(vcVNyPrk4crUSc4IWgwO8Q==)
     password: ENC(vcVNyPrk4crUSc4IWgwO8Q==)
     virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual   #手动ack确认
 
 # 配置日志级别
 logging:
@@ -24,5 +27,12 @@ mybatis-plus:
     db-config:
       id-type: assign_id  # 雪花算法
     banner: false
+
+
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    password: superhire
 
 
