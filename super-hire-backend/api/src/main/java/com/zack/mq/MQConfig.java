@@ -18,7 +18,9 @@ public class MQConfig {
 
        @Bean(QUEUE_NAME)
        public Queue queue(){
-              return QueueBuilder.durable(QUEUE_NAME).build();
+              return QueueBuilder.durable(QUEUE_NAME)
+                      .withArgument("x-message-ttl", 10000) // 消息过期时间
+                      .build();
        }
 
 
