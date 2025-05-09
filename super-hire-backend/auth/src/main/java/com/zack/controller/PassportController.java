@@ -23,6 +23,9 @@ import com.zack.utils.JWTUtils;
 import com.zack.utils.RedisOperator;
 import com.zack.vo.UsersVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -80,9 +83,17 @@ public class PassportController extends BaseInfoProperties {
             log.info("routingKey:{}",routingKey);
 
         });
+        // 配置消息处理器
+        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message) throws AmqpException {
+                message.getMessageProperties().setExpiration("10000");
+                return message;
+            }
+        };
 
           //使用mq异步解耦短信发送
-        rabbitTemplate.convertAndSend(MQConfig.EXCHANGE_NAME,MQConfig.ROUTING_KEY, GsonUtils.object2String(smsContentQO));
+        rabbitTemplate.convertAndSend(MQConfig.EXCHANGE_NAME,MQConfig.ROUTING_KEY, GsonUtils.object2String(smsContentQO), messagePostProcessor);
 
         //存储手机验证码
         redisOperator.set(mobile, "1234", 60L);
