@@ -17,17 +17,26 @@ public class MQSMSConsumer {
 
     @RabbitListener(queues = {MQConfig.QUEUE_NAME})
     public void receive(String payload, Message message, Channel channel) throws Exception {
-        //获取routerkey
-        String routingKey = message.getMessageProperties().getReceivedRoutingKey();
+        try {
+            //获取routerkey
+            String routingKey = message.getMessageProperties().getReceivedRoutingKey();
 
-        if (routingKey.equals(MQConfig.ROUTING_KEY)) {
-            log.info("收到消息：" + payload);
-            SMSContentQO smsContentQO = GsonUtils.stringToBean(payload, SMSContentQO.class);
+            if (routingKey.equals(MQConfig.ROUTING_KEY)) {
+                log.info("收到消息：" + payload);
+                SMSContentQO smsContentQO = GsonUtils.stringToBean(payload, SMSContentQO.class);
 
-            //TODO 发送短信(空方法，自实现)
-            smsUtils.sendSMS(smsContentQO.getMobile(), smsContentQO.getContent());
+                //TODO 发送短信(空方法，自实现)
+                smsUtils.sendSMS(smsContentQO.getMobile(), smsContentQO.getContent());
+            }
+
+            //手动消费消息
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+
+            //手动拒绝消息
+            channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
+            throw new RuntimeException(e);
         }
-
 
     }
 }

@@ -15,6 +15,7 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual   #手动ack确认
+        prefetch: 2     #每次从队列获取2条消息
 
 # 配置日志级别
 logging:
