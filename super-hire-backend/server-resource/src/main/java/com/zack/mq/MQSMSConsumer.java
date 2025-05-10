@@ -15,13 +15,13 @@ public class MQSMSConsumer {
     @Autowired
     private SMSUtils smsUtils;
 
-    @RabbitListener(queues = {MQConfig.QUEUE_NAME})
+    @RabbitListener(queues = {MQConfig.SMS_QUEUE})
     public void receive(String payload, Message message, Channel channel) throws Exception {
         try {
             //获取routerkey
             String routingKey = message.getMessageProperties().getReceivedRoutingKey();
 
-            if (routingKey.equals(MQConfig.ROUTING_KEY)) {
+            if (routingKey.equals(MQConfig.SMS_ROUTING_KEY)) {
                 log.info("收到消息：" + payload);
                 SMSContentQO smsContentQO = GsonUtils.stringToBean(payload, SMSContentQO.class);
 
@@ -32,7 +32,6 @@ public class MQSMSConsumer {
             //手动消费消息
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
-
             //手动拒绝消息
             channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
             throw new RuntimeException(e);

@@ -87,13 +87,15 @@ public class PassportController extends BaseInfoProperties {
         MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
             @Override
             public Message postProcessMessage(Message message) throws AmqpException {
-                message.getMessageProperties().setExpiration("10000");
+                message.getMessageProperties().setExpiration("20000");
                 return message;
             }
         };
 
           //使用mq异步解耦短信发送
-        rabbitTemplate.convertAndSend(MQConfig.EXCHANGE_NAME,MQConfig.ROUTING_KEY, GsonUtils.object2String(smsContentQO), messagePostProcessor);
+        for (int i = 0; i < 10; i++) {
+            rabbitTemplate.convertAndSend(MQConfig.SMS_EXCHANGE,MQConfig.SMS_ROUTING_KEY, GsonUtils.object2String(smsContentQO), messagePostProcessor);
+        }
 
         //存储手机验证码
         redisOperator.set(mobile, "1234", 60L);
