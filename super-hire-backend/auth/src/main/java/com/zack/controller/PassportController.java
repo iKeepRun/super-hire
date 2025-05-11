@@ -14,6 +14,7 @@ import com.zack.enums.ShowWhichName;
 import com.zack.enums.UserRole;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
+import com.zack.feign.WorkMicroFeign;
 import com.zack.mapper.UsersMapper;
 import com.zack.mq.MQConfig;
 import com.zack.mq.SMSContentQO;
@@ -52,6 +53,9 @@ public class PassportController extends BaseInfoProperties {
     private UsersMapper usersMapper;
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private WorkMicroFeign workMicroFeign;
 
     @PostMapping("/getSMSCode")
     public CommonResult getSMSCode(String mobile,
@@ -148,6 +152,8 @@ public class PassportController extends BaseInfoProperties {
             users.setUpdated_time(new Date());
 
            usersMapper.insert(users);
+           //调用简历服务，初始化个人简历
+            workMicroFeign.init(users.getId());
         }
 
         String jwt = jwtUtils.createJWTWithPrefix(new Gson().toJson(users), TOKEN_USER_PREFIX);

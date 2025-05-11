@@ -24,6 +24,11 @@ spring:
           uri: lb://server-resource
           predicates:
             - Path=/resource/**
+
+        - id: workRouter
+          uri: lb://work-service
+          predicates:
+            - Path=/resume/**
       globalcors:
         cors-configurations:
           '[/**]':

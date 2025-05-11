@@ -19,6 +19,8 @@
         <module>gateway</module>
         <module>auth</module>
         <module>server-resource</module>
+        <module>service-work</module>
+        <module>generator</module>
     </modules>
 
     <properties>

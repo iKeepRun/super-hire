@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zack.mapper.ResumeMapper">
+
+    <resultMap id="BaseResultMap" type="com.zack.domain.Resume">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+            <result property="advantage" column="advantage" jdbcType="VARCHAR"/>
+            <result property="advantage_html" column="advantage_html" jdbcType="VARCHAR"/>
+            <result property="credentials" column="credentials" jdbcType="VARCHAR"/>
+            <result property="skills" column="skills" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="refresh_time" column="refresh_time" jdbcType="TIMESTAMP"/>
+            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updated_time" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,advantage,
+        advantage_html,credentials,skills,
+        status,refresh_time,create_time,
+        updated_time
+    </sql>
+</mapper>
