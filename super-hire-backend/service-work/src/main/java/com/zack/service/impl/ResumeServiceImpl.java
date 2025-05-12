@@ -7,6 +7,8 @@ import com.zack.service.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
 * @author chenzhiqiang
 * @description 针对表【resume(简历表)】的数据库操作Service实现
@@ -22,6 +24,8 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeMapper, Resume>
     public void initResume(String userId) {
         Resume resume = new Resume();
         resume.setUserId(userId);
+        resume.setCreateTime(new Date());
+        resume.setUpdatedTime(new Date());
         resumeMapper.insert(resume);
     }
 }

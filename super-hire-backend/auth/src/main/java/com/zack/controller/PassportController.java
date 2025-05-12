@@ -53,7 +53,6 @@ public class PassportController extends BaseInfoProperties {
     private UsersMapper usersMapper;
     @Autowired
     private RabbitTemplate rabbitTemplate;
-
     @Autowired
     private WorkMicroFeign workMicroFeign;
 
@@ -128,10 +127,10 @@ public class PassportController extends BaseInfoProperties {
         // 用户不存在，就注册
         if (users == null) {
             users = new Users();
-            String mobilePhone = DesensitizedUtil.mobilePhone(mobile);
-            users.setMobile(mobilePhone);
-            users.setNickname("昵称:"+mobilePhone);
-            users.setReal_name("真名:"+mobilePhone);
+            // String mobilePhone = DesensitizedUtil.mobilePhone(mobile);
+            users.setMobile(mobile);
+            users.setNickname("昵称:"+mobile);
+            users.setReal_name("真名:"+mobile);
             users.setShow_which_name(ShowWhichName.nickname.type);
             users.setSex(Sex.man.type);
             users.setFace("");
@@ -151,8 +150,11 @@ public class PassportController extends BaseInfoProperties {
             users.setCreated_time(new Date());
             users.setUpdated_time(new Date());
 
-           usersMapper.insert(users);
-           //调用简历服务，初始化个人简历
+            usersMapper.insert(users);
+
+            log.info("获取用户userId {}",users.getId());
+            log.info("插入后的用户 {}",users);
+           //调用简历服务，初始化用户简历
             workMicroFeign.init(users.getId());
         }
 

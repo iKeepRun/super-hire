@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @MapperScan("com.zack.mapper")
 @EnableDiscoveryClient
-@EnableFeignClients
+@EnableFeignClients("com.zack.feign")
 public class AuthApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthApplication.class, args);
