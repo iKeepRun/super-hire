@@ -36,3 +36,8 @@ spring:
             allowedHeaders: "*"
             allowedMethods: "*"
             allowCredentials: true
+
+
+    loadbalancer:       #开启基于nacos规则的负载均衡
+      nacos:
+        enabled: true
