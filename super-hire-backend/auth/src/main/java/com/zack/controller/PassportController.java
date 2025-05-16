@@ -23,6 +23,7 @@ import com.zack.utils.IPUtil;
 import com.zack.utils.JWTUtils;
 import com.zack.utils.RedisOperator;
 import com.zack.vo.UsersVO;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
@@ -107,6 +108,7 @@ public class PassportController extends BaseInfoProperties {
     }
 
     @PostMapping("/login")
+    @GlobalTransactional
     public CommonResult<UsersVO> login(@Valid @RequestBody LoginDTO loginDTO,
                               HttpServletRequest request) {
         String mobile = loginDTO.getMobile();
@@ -156,6 +158,7 @@ public class PassportController extends BaseInfoProperties {
             log.info("插入后的用户 {}",users);
            //调用简历服务，初始化用户简历
             workMicroFeign.init(users.getId());
+            // int i=1/0;
         }
 
         String jwt = jwtUtils.createJWTWithPrefix(new Gson().toJson(users), TOKEN_USER_PREFIX);

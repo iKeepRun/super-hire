@@ -18,3 +18,24 @@ mybatis-plus:
     db-config:
       id-type: assign_id  # 雪花算法
     banner: false
+
+
+
+seata:
+  enabled: true
+  tx-service-group: hire_tx_group
+  service:
+    vgroup-mapping:
+      hire_tx_group: SEATA_GROUP
+    grouplist:
+      SEATA_GROUP: 127.0.0.1:18091
+  config:
+    nacos:
+      server-addr: 127.0.0.1:18848
+      username:
+      password:
+  registry:
+    nacos:
+      server-addr: 127.0.0.1:18848
+      username:
+      password:
