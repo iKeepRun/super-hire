@@ -23,7 +23,10 @@ import com.zack.utils.IPUtil;
 import com.zack.utils.JWTUtils;
 import com.zack.utils.RedisOperator;
 import com.zack.vo.UsersVO;
+import io.seata.core.context.RootContext;
+import io.seata.core.exception.TransactionException;
 import io.seata.spring.annotation.GlobalTransactional;
+import io.seata.tm.api.GlobalTransactionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
@@ -157,7 +160,17 @@ public class PassportController extends BaseInfoProperties {
             log.info("获取用户userId {}",users.getId());
             log.info("插入后的用户 {}",users);
            //调用简历服务，初始化用户简历
-            workMicroFeign.init(users.getId());
+            CommonResult commonResult = workMicroFeign.init(users.getId());
+            if (commonResult.getStatus() != 200) {
+                String xid = RootContext.getXID();
+                if (StrUtil.isNotBlank(xid)) {
+                    try {
+                        GlobalTransactionContext.reload(RootContext.getXID()).rollback();
+                    } catch (TransactionException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
             // int i=1/0;
         }
 
