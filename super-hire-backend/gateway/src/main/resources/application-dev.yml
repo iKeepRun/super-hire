@@ -8,7 +8,7 @@ spring:
         - id: userRouter
           uri: lb://user-service           # lb://表示开启负载均衡 后面根据注册实际名称，没有指定的话就是application.name
           predicates:
-            - Path=/user/**,/admininfo/**
+            - Path=/userinfo/**,/admininfo/**
 
         - id: companyRouter
           uri: lb://company-service
