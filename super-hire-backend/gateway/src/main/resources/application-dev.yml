@@ -33,7 +33,7 @@ spring:
         - id: fileRouter
           uri: lb://file-service
           predicates:
-            - Path=/file/**
+            - Path=/file/**,/static/**
       globalcors:
         cors-configurations:
           '[/**]':

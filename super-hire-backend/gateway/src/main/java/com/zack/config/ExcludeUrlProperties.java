@@ -16,4 +16,6 @@ public class ExcludeUrlProperties {
     private List<String> urls;
 
     private List<String> limitUrls;
+
+    private String fileStart;
 }
