@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="company")
 @Data
-public class Company implements Serializable {
+public class Company {
     /**
      * 
      */
@@ -24,12 +24,12 @@ public class Company implements Serializable {
     /**
      * 企业名称
      */
-    private String company_name;
+    private String companyName;
 
     /**
      * 企业短名
      */
-    private String short_name;
+    private String shortName;
 
     /**
      * 企业logo
@@ -39,7 +39,7 @@ public class Company implements Serializable {
     /**
      * 营业执照
      */
-    private String biz_license;
+    private String bizLicense;
 
     /**
      * 企业所在国家
@@ -74,7 +74,7 @@ public class Company implements Serializable {
     /**
      * 人员规模/企业规模
      */
-    private String people_size;
+    private String peopleSize;
 
     /**
      * 所在行业
@@ -84,12 +84,12 @@ public class Company implements Serializable {
     /**
      * 融资阶段
      */
-    private String financ_stage;
+    private String financStage;
 
     /**
      * 工作时间，例：9:00-18:00 周末单休
      */
-    private String work_time;
+    private String workTime;
 
     /**
      * 公司简介
@@ -121,22 +121,22 @@ public class Company implements Serializable {
     /**
      * 成立时间
      */
-    private Date build_date;
+    private LocalDate buildDate;
 
     /**
      * 注册资本
      */
-    private String regist_capital;
+    private String registCapital;
 
     /**
      * 注册地址
      */
-    private String regist_place;
+    private String registPlace;
 
     /**
      * 法人代表
      */
-    private String legal_representative;
+    private String legalRepresentative;
 
     /**
      * 审核状态
@@ -145,53 +145,50 @@ public class Company implements Serializable {
 2：审核认证失败
 3：审核中（等待审核）
      */
-    private Integer review_status;
+    private Integer reviewStatus;
 
     /**
      * 审核回复/审核意见
      */
-    private String review_replay;
+    private String reviewReplay;
 
     /**
      * 入驻平台授权书
      */
-    private String auth_letter;
+    private String authLetter;
 
     /**
      * 提交申请人的用户id
      */
-    private String commit_user_id;
+    private String commitUserId;
 
     /**
      * 提交申请人的手机号
      */
-    private String commit_user_mobile;
+    private String commitUserMobile;
 
     /**
      * 提交审核的日期
      */
-    private Date commit_date;
+    private LocalDate commitDate;
 
     /**
      * 0: 否  1: 是
      */
-    private Integer is_vip;
+    private Integer isVip;
 
     /**
      * Vip过期日期，判断企业是否vip，需要is_vip=1并且过期日期>=当前日期
      */
-    private Date vip_expire_date;
+    private LocalDate vipExpireDate;
 
     /**
      * 
      */
-    private Date created_time;
+    private LocalDateTime createdTime;
 
     /**
      * 
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="admin")
 @Data
-public class Admin implements Serializable {
+public class Admin {
     /**
      * 
      */
@@ -49,13 +48,10 @@ public class Admin implements Serializable {
     /**
      * 
      */
-    private Date create_time;
+    private LocalDateTime createTime;
 
     /**
      * 
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

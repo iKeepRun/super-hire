@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="job")
 @Data
-public class Job implements Serializable {
+public class Job {
     /**
      * 
      */
@@ -24,27 +23,27 @@ public class Job implements Serializable {
     /**
      * 谁的职位，HR角色用户id
      */
-    private String hr_id;
+    private String hrId;
 
     /**
      * 职位所属哪家公司的，HR离职后则不能查询到
      */
-    private String company_id;
+    private String companyId;
 
     /**
      * 职位名称
      */
-    private String job_name;
+    private String jobName;
 
     /**
      * 职位类别
      */
-    private String job_type;
+    private String jobType;
 
     /**
      * 工作经验年限
      */
-    private String exp_years;
+    private String expYears;
 
     /**
      * 技能标签
@@ -54,22 +53,22 @@ public class Job implements Serializable {
     /**
      * 薪资要求区间-起始
      */
-    private Integer begin_salary;
+    private Integer beginSalary;
 
     /**
      * 薪资要求区间-结束
      */
-    private Integer end_salary;
+    private Integer endSalary;
 
     /**
      * 总共几个月工资
      */
-    private Integer monthly_salary;
+    private Integer monthlySalary;
 
     /**
      * 职位描述
      */
-    private String job_desc;
+    private String jobDesc;
 
     /**
      * 职位标签
@@ -96,18 +95,15 @@ public class Job implements Serializable {
     /**
      * 违规原因
      */
-    private String violate_reason;
+    private String violateReason;
 
     /**
      * 
      */
-    private Date create_time;
+    private LocalDateTime createTime;
 
     /**
      * 
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

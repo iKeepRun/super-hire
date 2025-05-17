@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="resume_expect")
 @Data
-public class ResumeExpect implements Serializable {
+public class ResumeExpect {
     /**
      * 
      */
@@ -24,17 +23,17 @@ public class ResumeExpect implements Serializable {
     /**
      * 谁的求职期望，用户id
      */
-    private String user_id;
+    private String userId;
 
     /**
      * 属于哪份简历id
      */
-    private String resume_id;
+    private String resumeId;
 
     /**
      * 期望职位
      */
-    private String job_name;
+    private String jobName;
 
     /**
      * 工作所在城市
@@ -49,23 +48,20 @@ public class ResumeExpect implements Serializable {
     /**
      * 薪资要求区间-起始
      */
-    private Integer begin_salary;
+    private Integer beginSalary;
 
     /**
      * 薪资要求区间-结束
      */
-    private Integer end_salary;
+    private Integer endSalary;
 
     /**
      * 
      */
-    private Date create_time;
+    private LocalDateTime createTime;
 
     /**
      * 
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

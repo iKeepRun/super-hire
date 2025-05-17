@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -135,25 +137,25 @@ public class PassportController extends BaseInfoProperties {
             // String mobilePhone = DesensitizedUtil.mobilePhone(mobile);
             users.setMobile(mobile);
             users.setNickname("昵称:"+mobile);
-            users.setReal_name("真名:"+mobile);
-            users.setShow_which_name(ShowWhichName.nickname.type);
+            users.setRealName("真名:"+mobile);
+            users.setShowWhichName(ShowWhichName.nickname.type);
             users.setSex(Sex.man.type);
             users.setFace("");
             users.setEmail("xxx@163.com");
-            users.setBirthday(new Date());
+            users.setBirthday(LocalDate.now());
             users.setCountry("中国");
             users.setProvince("");
             users.setCity("");
             users.setDistrict("");
             users.setDescription("这家伙喜欢coding,不喜欢说话");
-            users.setStart_work_date(new Date());
+            users.setStartWorkDate(LocalDate.now());
             users.setPosition("底层码农");
             users.setRole(UserRole.CANDIDATE.type);
-            users.setHr_in_which_company_id("");
-            users.setHr_signature("");
-            users.setHr_tags("");
-            users.setCreated_time(new Date());
-            users.setUpdated_time(new Date());
+            users.setHrInWhichCompanyId("");
+            users.setHrSignature("");
+            users.setHrTags("");
+            users.setCreatedTime(LocalDateTime.now());
+            users.setUpdatedTime(LocalDateTime.now());
 
             usersMapper.insert(users);
 

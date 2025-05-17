@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="resume_education")
 @Data
-public class ResumeEducation implements Serializable {
+public class ResumeEducation {
     /**
      * 
      */
@@ -24,12 +23,12 @@ public class ResumeEducation implements Serializable {
     /**
      * 谁的教育经历，用户id
      */
-    private String user_id;
+    private String userId;
 
     /**
      * 属于哪份简历id
      */
-    private String resume_id;
+    private String resumeId;
 
     /**
      * 学校名称
@@ -49,23 +48,20 @@ public class ResumeEducation implements Serializable {
     /**
      * 开始日期
      */
-    private String begin_date;
+    private String beginDate;
 
     /**
      * 结束日期
      */
-    private String end_date;
+    private String endDate;
 
     /**
      * 
      */
-    private Date create_time;
+    private LocalDateTime createTime;
 
     /**
      * 
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

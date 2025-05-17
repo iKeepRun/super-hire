@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -13,7 +12,7 @@ import lombok.Data;
  */
 @TableName(value ="industry")
 @Data
-public class Industry implements Serializable {
+public class Industry {
     /**
      * 
      */
@@ -33,18 +32,15 @@ public class Industry implements Serializable {
     /**
      * 为0则当前为第一级分类，否则当前为fatherId所对应行业的子分类
      */
-    private String father_id;
+    private String fatherId;
 
     /**
      * 用于提供给前端tree显示标记是否展示下拉箭头，一级分类与二级分类为true，三级分类也就是最后一级分类是false
      */
-    private Integer is_leaf;
+    private Integer isLeaf;
 
     /**
      * 分类层级，用于标记
      */
     private Integer level;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }

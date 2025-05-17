@@ -58,8 +58,8 @@ public class AdminServiceImpl extends BaseInfoProperties implements AdminService
         newAdmin.setPassword(pwd);
         newAdmin.setSlat(slat);
 
-        newAdmin.setCreate_time(new Date());
-        newAdmin.setUpdated_time(new Date());
+        newAdmin.setCreateTime(LocalDateTime.now());
+        newAdmin.setUpdatedTime(LocalDateTime.now());
 
         adminMapper.insert(newAdmin);
     }
@@ -111,7 +111,7 @@ public class AdminServiceImpl extends BaseInfoProperties implements AdminService
     public void updateAdmin(UpdateAdminDTO adminDTO) {
         Admin admin = new Admin();
         BeanUtils.copyProperties(adminDTO, admin);
-        admin.setUpdated_time(new Date());
+        admin.setUpdatedTime(LocalDateTime.now());
         adminMapper.updateById(admin);
     }
 

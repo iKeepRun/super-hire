@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="resume_work_exp")
 @Data
-public class ResumeWorkExp implements Serializable {
+public class ResumeWorkExp {
     /**
      * 
      */
@@ -24,17 +23,17 @@ public class ResumeWorkExp implements Serializable {
     /**
      * 谁的工作经验，用户id
      */
-    private String user_id;
+    private String userId;
 
     /**
      * 属于哪份简历id
      */
-    private String resume_id;
+    private String resumeId;
 
     /**
      * 就职公司名称
      */
-    private String company_name;
+    private String companyName;
 
     /**
      * 行业
@@ -44,12 +43,12 @@ public class ResumeWorkExp implements Serializable {
     /**
      * 在职时间-开始
      */
-    private String begin_date;
+    private String beginDate;
 
     /**
      * 在职时间-结束
      */
-    private String end_date;
+    private String endDate;
 
     /**
      * 职位名称
@@ -69,18 +68,15 @@ public class ResumeWorkExp implements Serializable {
     /**
      * 工作内容、业绩、职责等
      */
-    private String content_html;
+    private String contentHtml;
 
     /**
      * 
      */
-    private Date create_time;
+    private LocalDateTime createTime;
 
     /**
      * 
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

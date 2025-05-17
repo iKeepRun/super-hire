@@ -7,6 +7,7 @@ import com.zack.service.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -24,8 +25,8 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeMapper, Resume>
     public void initResume(String userId) {
         Resume resume = new Resume();
         resume.setUserId(userId);
-        resume.setCreateTime(new Date());
-        resume.setUpdatedTime(new Date());
+        resume.setCreateTime(LocalDateTime.now());
+        resume.setUpdatedTime(LocalDateTime.now());
         resumeMapper.insert(resume);
     }
 }

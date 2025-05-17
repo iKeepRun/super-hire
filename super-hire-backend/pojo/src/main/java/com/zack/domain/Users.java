@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Data;
-import lombok.Getter;
 
 /**
  * 用户表
@@ -15,7 +14,7 @@ import lombok.Getter;
  */
 @TableName(value ="users")
 @Data
-public class Users implements Serializable {
+public class Users {
     /**
      * 
      */
@@ -35,12 +34,12 @@ public class Users implements Serializable {
     /**
      * 真实姓名
      */
-    private String real_name;
+    private String realName;
 
     /**
      * 对外展示名，1：真实姓名，2：昵称
      */
-    private Integer show_which_name;
+    private Integer showWhichName;
 
     /**
      * 性别，1:男 0:女 2:保密
@@ -60,7 +59,7 @@ public class Users implements Serializable {
     /**
      * 生日
      */
-    private Date birthday;
+    private LocalDate birthday;
 
     /**
      * 国家
@@ -90,7 +89,7 @@ public class Users implements Serializable {
     /**
      * 我参加工作的时间
      */
-    private Date start_work_date;
+    private LocalDate startWorkDate;
 
     /**
      * 我当前职位/职务
@@ -105,28 +104,25 @@ public class Users implements Serializable {
     /**
      * 成为HR后，认证的（绑定的）公司主键id
      */
-    private String hr_in_which_company_id;
+    private String hrInWhichCompanyId;
 
     /**
      * 我的一句话签名
      */
-    private String hr_signature;
+    private String hrSignature;
 
     /**
      * 我的个性化标签
      */
-    private String hr_tags;
+    private String hrTags;
 
     /**
      * 创建时间
      */
-    private Date created_time;
+    private LocalDateTime createdTime;
 
     /**
      * 更新时间
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

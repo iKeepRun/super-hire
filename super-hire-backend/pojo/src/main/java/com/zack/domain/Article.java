@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="article")
 @Data
-public class Article implements Serializable {
+public class Article {
     /**
      * 
      */
@@ -34,17 +33,17 @@ public class Article implements Serializable {
     /**
      * 文章封面图，article_type=1 的时候展示
      */
-    private String article_cover;
+    private String articleCover;
 
     /**
      * 发布者amin_id
      */
-    private String publish_admin_id;
+    private String publishAdminId;
 
     /**
      * 文章发布时间（也是预约发布的时间）
      */
-    private Date publish_time;
+    private LocalDateTime publishTime;
 
     /**
      * 发布者，字段冗余，避免多表关联
@@ -54,7 +53,7 @@ public class Article implements Serializable {
     /**
      * 发布者头像，字段冗余
      */
-    private String publisher_face;
+    private String publisherFace;
 
     /**
      * 文章状态：0：关闭，待发布，1：正常，可查阅，2：删除，无法查看
@@ -64,13 +63,10 @@ public class Article implements Serializable {
     /**
      * 
      */
-    private Date create_time;
+    private LocalDateTime createTime;
 
     /**
      * 
      */
-    private Date update_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updateTime;
 }

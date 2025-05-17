@@ -1,11 +1,11 @@
 package com.zack.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.LocalDateTime;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * 简历表
@@ -17,7 +17,7 @@ public class Resume {
     /**
      * 
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId
     private String id;
 
     /**
@@ -53,15 +53,15 @@ public class Resume {
     /**
      * 刷新简历时间
      */
-    private Date refreshTime;
+    private LocalDateTime refreshTime;
 
     /**
      * 
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 
      */
-    private Date updatedTime;
+    private LocalDateTime updatedTime;
 }

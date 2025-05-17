@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -14,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="orders")
 @Data
-public class Orders implements Serializable {
+public class Orders {
     /**
      * 
      */
@@ -24,37 +23,37 @@ public class Orders implements Serializable {
     /**
      * 用户主键id
      */
-    private String user_id;
+    private String userId;
 
     /**
      * 购买用户所在的企业主键id
      */
-    private String company_id;
+    private String companyId;
 
     /**
      * 商品名称
      */
-    private String item_name;
+    private String itemName;
 
     /**
      * 订单总价
      */
-    private Integer total_amount;
+    private Integer totalAmount;
 
     /**
      * 实际支付总价格
      */
-    private Integer real_pay_amount;
+    private Integer realPayAmount;
 
     /**
      * 邮费;默认可以为零，代表包邮
      */
-    private Integer post_amount;
+    private Integer postAmount;
 
     /**
      * 支付方式
      */
-    private Integer pay_method;
+    private Integer payMethod;
 
     /**
      * 订单状态
@@ -69,13 +68,10 @@ public class Orders implements Serializable {
     /**
      * 创建时间
      */
-    private Date created_time;
+    private LocalDateTime createdTime;
 
     /**
      * 更新时间
      */
-    private Date updated_time;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private LocalDateTime updatedTime;
 }

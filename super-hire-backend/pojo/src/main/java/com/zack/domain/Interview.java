@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -15,7 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="interview")
 @Data
-public class Interview implements Serializable {
+public class Interview {
     /**
      * 
      */
@@ -25,37 +24,37 @@ public class Interview implements Serializable {
     /**
      * 本面试属于哪个hr的
      */
-    private String hr_user_id;
+    private String hrUserId;
 
     /**
      * 本面试属于哪一个公司的
      */
-    private String company_id;
+    private String companyId;
 
     /**
      * 面试者，候选人id
      */
-    private String cand_user_id;
+    private String candUserId;
 
     /**
      * 面试的岗位id
      */
-    private String job_id;
+    private String jobId;
 
     /**
      * 面试的岗位名称
      */
-    private String job_name;
+    private String jobName;
 
     /**
      * 面试时间
      */
-    private Date interview_time;
+    private LocalDateTime interviewTime;
 
     /**
      * 面试地点
      */
-    private String interview_address;
+    private String interviewAddress;
 
     /**
      * 备注信息
@@ -76,20 +75,17 @@ public class Interview implements Serializable {
      * 候选人名称（候选人名称）  
 简历名称与职位使用字段冗余，目的相当于快照，只记录当时信息
      */
-    private String cand_name;
+    private String candName;
 
     /**
      * 候选人头像  
 简历名称与职位使用字段冗余，目的相当于快照，只记录当时信息
      */
-    private String cand_face;
+    private String candFace;
 
     /**
      * 候选人职位  
 简历名称与职位使用字段冗余，目的相当于快照，只记录当时信息
      */
-    private String cand_position;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private String candPosition;
 }
