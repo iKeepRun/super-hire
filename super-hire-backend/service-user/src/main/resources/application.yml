@@ -16,6 +16,7 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: assign_id  # 雪花算法
+      update-strategy: not_empty  # 字段更新策略 （空值不更新）
     banner: false
 
 
