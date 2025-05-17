@@ -21,6 +21,7 @@
         <module>server-resource</module>
         <module>service-work</module>
         <module>generator</module>
+        <module>service-file</module>
     </modules>
 
     <properties>

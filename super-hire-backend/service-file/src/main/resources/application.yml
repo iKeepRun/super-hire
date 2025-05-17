@@ -1,0 +1,13 @@
+server:
+  port: ${port:5001}
+
+spring:
+  application:
+    name: file-service
+#  profiles:
+#    active: dev
+
+# 配置日志级别
+logging:
+  level:
+    root: info

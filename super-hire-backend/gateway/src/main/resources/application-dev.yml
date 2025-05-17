@@ -29,6 +29,11 @@ spring:
           uri: lb://work-service
           predicates:
             - Path=/resume/**
+
+        - id: fileRouter
+          uri: lb://file-service
+          predicates:
+            - Path=/file/**
       globalcors:
         cors-configurations:
           '[/**]':
