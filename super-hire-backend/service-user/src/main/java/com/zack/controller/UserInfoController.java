@@ -50,7 +50,6 @@ public class UserInfoController extends BaseInfoProperties {
                     TOKEN_USER_PREFIX);
             usersVO.setUserToken(uToken);
         }
-
         return usersVO;
     }
 }
