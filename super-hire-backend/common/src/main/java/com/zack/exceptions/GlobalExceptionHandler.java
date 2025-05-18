@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.security.SignatureException;
 import java.util.HashMap;
@@ -21,6 +22,12 @@ import java.util.Map;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public CommonResult<?> maxUploadSizeExceededExceptionHandler(MaxUploadSizeExceededException e){
+        log.error("BusinessException",e);
+        return CommonResult.error(ErrorCode.FILE_MAX_SIZE_500KB_ERROR);
+    }
+
     @ExceptionHandler(BusinessException.class)
     public CommonResult<?> businessExceptionHandler(BusinessException e){
         log.error("BusinessException",e);
