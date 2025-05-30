@@ -20,12 +20,12 @@ import org.springframework.util.StopWatch;
  * @Author Zack
  * @Date 2020/3/22 15:51
  */
-@Component
-@Aspect
+// @Component
+// @Aspect
 @Slf4j
 public class SeataRollbackAspect {
 
-    @Before("execution(* com.zack.service..*.*(..))")
+    @Before("execution(* com.zack.service.impl..*.*(..))")
     public void begintx(JoinPoint joinPoint) throws Throwable {
         log.info("Seata事务开始");
         //手动开启全局事务
@@ -33,7 +33,7 @@ public class SeataRollbackAspect {
         gt.begin();
     }
 
-    @AfterThrowing(pointcut = "execution(* com.zack.service..*.*(..))",
+    @AfterThrowing(pointcut = "execution(* com.zack.service.impl..*.*(..))",
             throwing = "throwable")
     public void seataRollback(Throwable throwable) throws Throwable {
         log.error("Seata事务回滚异常", throwable);
