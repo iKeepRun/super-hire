@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zack.mapper.CompanyMapper">
+
+    <resultMap id="BaseResultMap" type="com.zack.domain.Company">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+            <result property="shortName" column="short_name" jdbcType="VARCHAR"/>
+            <result property="logo" column="logo" jdbcType="VARCHAR"/>
+            <result property="bizLicense" column="biz_license" jdbcType="VARCHAR"/>
+            <result property="country" column="country" jdbcType="VARCHAR"/>
+            <result property="province" column="province" jdbcType="VARCHAR"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="district" column="district" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="nature" column="nature" jdbcType="VARCHAR"/>
+            <result property="peopleSize" column="people_size" jdbcType="VARCHAR"/>
+            <result property="industry" column="industry" jdbcType="VARCHAR"/>
+            <result property="financStage" column="financ_stage" jdbcType="VARCHAR"/>
+            <result property="workTime" column="work_time" jdbcType="VARCHAR"/>
+            <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
+            <result property="advantage" column="advantage" jdbcType="VARCHAR"/>
+            <result property="benefits" column="benefits" jdbcType="VARCHAR"/>
+            <result property="bonus" column="bonus" jdbcType="VARCHAR"/>
+            <result property="subsidy" column="subsidy" jdbcType="VARCHAR"/>
+            <result property="buildDate" column="build_date" jdbcType="DATE"/>
+            <result property="registCapital" column="regist_capital" jdbcType="VARCHAR"/>
+            <result property="registPlace" column="regist_place" jdbcType="VARCHAR"/>
+            <result property="legalRepresentative" column="legal_representative" jdbcType="VARCHAR"/>
+            <result property="reviewStatus" column="review_status" jdbcType="INTEGER"/>
+            <result property="reviewReplay" column="review_replay" jdbcType="VARCHAR"/>
+            <result property="authLetter" column="auth_letter" jdbcType="VARCHAR"/>
+            <result property="commitUserId" column="commit_user_id" jdbcType="VARCHAR"/>
+            <result property="commitUserMobile" column="commit_user_mobile" jdbcType="VARCHAR"/>
+            <result property="commitDate" column="commit_date" jdbcType="DATE"/>
+            <result property="isVip" column="is_vip" jdbcType="INTEGER"/>
+            <result property="vipExpireDate" column="vip_expire_date" jdbcType="DATE"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,company_name,short_name,
+        logo,biz_license,country,
+        province,city,district,
+        address,nature,people_size,
+        industry,financ_stage,work_time,
+        introduction,advantage,benefits,
+        bonus,subsidy,build_date,
+        regist_capital,regist_place,legal_representative,
+        review_status,review_replay,auth_letter,
+        commit_user_id,commit_user_mobile,commit_date,
+        is_vip,vip_expire_date,created_time,
+        updated_time
+    </sql>
+</mapper>
