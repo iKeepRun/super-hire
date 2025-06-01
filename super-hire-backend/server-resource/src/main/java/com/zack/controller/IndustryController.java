@@ -4,8 +4,11 @@ import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Industry;
 import com.zack.service.IndustryService;
+import com.zack.utils.GsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -13,6 +16,43 @@ import org.springframework.web.bind.annotation.*;
 public class IndustryController {
    @Autowired
    private IndustryService industryService;
+
+
+    /**
+     * 获得顶级分类列表
+     * @return
+     */
+    @GetMapping("app/initTopList")
+    public CommonResult initTopList() {
+
+        // 先从redis中查询，如果没有，再从db中查询后并且放入到redis中
+        // String topIndustryListStr = redis.get(TOP_INDUSTRY_LIST);
+        // List<Industry> topIndustryList = null;
+        // if (StringUtils.isNotBlank(topIndustryListStr)) {
+        //     topIndustryList = GsonUtils.stringToListAnother(topIndustryListStr,
+        //             Industry.class);
+        // } else {
+        //     topIndustryList = industryService.getTopIndustryList();
+        //     redis.set(TOP_INDUSTRY_LIST, GsonUtils.object2String(topIndustryList));
+        // }
+
+        // return CommonResult.success(topIndustryList);
+       return CommonResult.success(industryService.getTopIndustryList());
+    }
+
+    /****************************** 以上提供给app端使用 ******************************/
+
+
+    // 业务公用，接口解耦 原则
+    /**
+     * 为什么要解耦接口，要分开多个？
+     * 1. 松耦合，降低前端的依赖
+     * 2. 不能把鸡蛋都放在同一个篮子里
+     * 3. 不易于维护
+     * 4. if else 太多，高并发增加负荷
+     */
+
+    /****************************** 以下提供给运营平台使用 ******************************/
 
     @PostMapping("createNode")
     public CommonResult createNode(@RequestBody Industry industry) {
@@ -34,7 +74,54 @@ public class IndustryController {
      * @return
      */
     @GetMapping("getTopList")
-    public GraceJSONResult getTopList() {
-        return GraceJSONResult.ok(industryService.getTopIndustryList());
+    public CommonResult getTopList() {
+        return CommonResult.success(industryService.getTopIndustryList());
+    }
+
+    /**
+     * 获得当前分类下的子分类列表
+     * 如果是默认的，则查询顶级分类
+     * @param industryId
+     * @return
+     */
+    @GetMapping("children/{industryId}")
+    public CommonResult getChildrenIndustryList(
+            @PathVariable("industryId") String industryId) {
+
+        List<Industry> list = industryService.getChildrenIndustryList(industryId);
+        return CommonResult.success(list);
+    }
+
+
+    /**
+     * 修改分类节点
+     * @param industry
+     * @return
+     */
+    @PostMapping("updateNode")
+    public CommonResult updateNode(@RequestBody Industry industry) {
+        industryService.updateIndustry(industry);
+//        resetRedisIndustry(industry);
+        return CommonResult.success();
+    }
+
+    @DeleteMapping("deleteNode/{industryId}")
+    public CommonResult deleteNode(@PathVariable("industryId") String industryId) {
+
+        // 判断如果是一级或二级节点，则需要保证没有子节点才能删除，三级节点可以直接删除
+        Industry temp = industryService.getById(industryId);
+        if (temp.getLevel() == 1 || temp.getLevel() == 2) {
+            // 查询该节点下是否含有子节点
+            long counts = industryService.getChildrenIndustryCounts(industryId);
+            if (counts > 0) {
+                return CommonResult.error("请保证该节点下无任何子节点后再删除！！！");
+            }
+        }
+
+//        resetRedisIndustry(temp);
+        industryService.removeById(industryId);
+
+
+        return CommonResult.success();
     }
 }

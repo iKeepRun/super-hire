@@ -51,6 +51,22 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry>
 
         return list;
     }
+
+    @Transactional
+    @Override
+    public void updateIndustry(Industry industry) {
+        baseMapper.updateById(industry);
+    }
+
+    @Override
+    public Long getChildrenIndustryCounts(String industryId) {
+
+        Long counts = baseMapper.selectCount(new QueryWrapper<Industry>()
+                .eq("father_id", industryId)
+        );
+
+        return counts;
+    }
 }
 
 
