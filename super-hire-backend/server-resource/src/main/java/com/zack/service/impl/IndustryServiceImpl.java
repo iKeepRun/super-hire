@@ -1,0 +1,39 @@
+package com.zack.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zack.domain.Industry;
+import com.zack.service.IndustryService;
+import com.zack.mapper.IndustryMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+* @author chenzhiqiang
+* @description 针对表【industry(行业表)】的数据库操作Service实现
+* @createDate 2025-05-17 10:19:37
+*/
+@Service
+public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry>
+    implements IndustryService{
+
+    @Override
+    public boolean getIndustryIsExistByName(String nodeName) {
+        Industry Industry = baseMapper.selectOne(new QueryWrapper<Industry>()
+                .eq("name", nodeName));
+
+        return Industry != null ? true : false;
+    }
+
+
+
+    @Transactional
+    @Override
+    public void createIndustry(Industry industry) {
+        baseMapper.insert(industry);
+    }
+}
+
+
+
+

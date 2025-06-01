@@ -23,7 +23,7 @@ spring:
         - id: resourceRouter
           uri: lb://server-resource
           predicates:
-            - Path=/resource/**
+            - Path=/resource/**,/industry/**
 
         - id: workRouter
           uri: lb://work-service
