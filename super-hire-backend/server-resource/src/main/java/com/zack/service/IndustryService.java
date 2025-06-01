@@ -4,6 +4,8 @@ import com.zack.domain.Industry;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
 * @author chenzhiqiang
 * @description 针对表【industry(行业表)】的数据库操作Service
@@ -18,4 +20,11 @@ public interface IndustryService extends IService<Industry> {
      */
      boolean getIndustryIsExistByName(String nodeName);
      void createIndustry(Industry industry);
+
+    /**
+     * 获得所有顶级（一级）分类列表
+     * @return
+     */
+     List<Industry> getTopIndustryList();
+    List<Industry> getChildrenIndustryList(String industryId);
 }

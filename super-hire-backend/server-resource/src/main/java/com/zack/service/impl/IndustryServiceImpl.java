@@ -8,6 +8,8 @@ import com.zack.mapper.IndustryMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
 * @author chenzhiqiang
 * @description 针对表【industry(行业表)】的数据库操作Service实现
@@ -31,6 +33,23 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry>
     @Override
     public void createIndustry(Industry industry) {
         baseMapper.insert(industry);
+    }
+
+
+    @Override
+    public List<Industry> getTopIndustryList() {
+        return getChildrenIndustryList("0");
+    }
+
+    @Override
+    public List<Industry> getChildrenIndustryList(String industryId) {
+
+        List<Industry> list = baseMapper.selectList(new QueryWrapper<Industry>()
+                .eq("father_id", industryId)
+                .orderByAsc("sort")
+        );
+
+        return list;
     }
 }
 

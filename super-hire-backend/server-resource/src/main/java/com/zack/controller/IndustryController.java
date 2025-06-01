@@ -5,10 +5,7 @@ import com.zack.common.GraceJSONResult;
 import com.zack.domain.Industry;
 import com.zack.service.IndustryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -30,5 +27,14 @@ public class IndustryController {
 //        resetRedisIndustry(industry);
 
         return CommonResult.success();
+    }
+
+    /**
+     * 获得顶级分类列表
+     * @return
+     */
+    @GetMapping("getTopList")
+    public GraceJSONResult getTopList() {
+        return GraceJSONResult.ok(industryService.getTopIndustryList());
     }
 }
