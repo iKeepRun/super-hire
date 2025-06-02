@@ -1,0 +1,11 @@
+查看插件版本   docker exec -it rabbitmq  rabbitmq-plugins list
+手动下载地址：https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/
+
+# 复制到容器内
+docker cp rabbitmq_delayed_message_exchange-3.8.17.ez rabbitmq:/plugins/
+
+# 启用插件
+docker exec -it rabbitmq  rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+# 重启rabbitmq
+docker restart rabbitmq
+
