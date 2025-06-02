@@ -40,6 +40,37 @@ public class IndustryController {
        return CommonResult.success(industryService.getTopIndustryList());
     }
 
+    /**
+     * 获得三级分类列表
+     * @return
+     */
+    @GetMapping("app/getThirdListByTop/{topIndustryId}")
+    public CommonResult getThirdListByTop(
+            @PathVariable("topIndustryId") String topIndustryId) {
+
+//         String thirdKey = THIRD_INDUSTRY_LIST + ":byTopId:" + topIndustryId;
+//
+//         // 先从redis中查询，如果没有，再从db中查询后并且放入到redis中
+//         String thirdIndustryListStr = redis.get(thirdKey);
+//         List<Industry> thirdIndustryList = null;
+//         if (StringUtils.isNotBlank(thirdIndustryListStr)) {
+//             thirdIndustryList = GsonUtils.stringToListAnother(thirdIndustryListStr, Industry.class);
+//         } else {
+//             thirdIndustryList = industryService.getThirdListByTop(topIndustryId);
+// //            redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
+//             // 避免缓存穿透，增加设空机制
+//             if (!CollectionUtils.isEmpty(thirdIndustryList)) {
+//                 redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
+//             } else {
+//                 redis.set(thirdKey, "[]", 10 * 60);
+//             }
+//         }
+//
+//         return GraceJSONResult.ok(thirdIndustryList);
+       return CommonResult.success(industryService.getThirdListByTop(topIndustryId));
+    }
+
+
     /****************************** 以上提供给app端使用 ******************************/
 
 

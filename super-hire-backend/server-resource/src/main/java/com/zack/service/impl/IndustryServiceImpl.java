@@ -3,12 +3,16 @@ package com.zack.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zack.domain.Industry;
+import com.zack.mapper.IndustryMapperCustom;
 import com.zack.service.IndustryService;
 import com.zack.mapper.IndustryMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author chenzhiqiang
@@ -18,7 +22,8 @@ import java.util.List;
 @Service
 public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry>
     implements IndustryService{
-
+    @Autowired
+    private IndustryMapperCustom industryMapperCustom;
     @Override
     public boolean getIndustryIsExistByName(String nodeName) {
         Industry Industry = baseMapper.selectOne(new QueryWrapper<Industry>()
@@ -66,6 +71,13 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry>
         );
 
         return counts;
+    }
+
+    @Override
+    public List<Industry> getThirdListByTop(String topIndustryId) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("topIndustryId", topIndustryId);
+        return industryMapperCustom.getThirdIndustryByTop(map);
     }
 }
 
