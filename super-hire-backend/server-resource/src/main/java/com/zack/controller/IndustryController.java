@@ -1,5 +1,8 @@
 package com.zack.controller;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.zack.base.BaseInfoProperties;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Industry;
@@ -13,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("industry")
-public class IndustryController {
+public class IndustryController extends BaseInfoProperties {
    @Autowired
    private IndustryService industryService;
 
@@ -25,19 +28,19 @@ public class IndustryController {
     @GetMapping("app/initTopList")
     public CommonResult initTopList() {
 
-        // 先从redis中查询，如果没有，再从db中查询后并且放入到redis中
-        // String topIndustryListStr = redis.get(TOP_INDUSTRY_LIST);
-        // List<Industry> topIndustryList = null;
-        // if (StringUtils.isNotBlank(topIndustryListStr)) {
-        //     topIndustryList = GsonUtils.stringToListAnother(topIndustryListStr,
-        //             Industry.class);
-        // } else {
-        //     topIndustryList = industryService.getTopIndustryList();
-        //     redis.set(TOP_INDUSTRY_LIST, GsonUtils.object2String(topIndustryList));
-        // }
+        //先从redis中查询，如果没有，再从db中查询后并且放入到redis中
+        String topIndustryListStr = redis.get(TOP_INDUSTRY_LIST);
+        List<Industry> topIndustryList = null;
+        if (StrUtil.isNotBlank(topIndustryListStr)) {
+            topIndustryList = GsonUtils.stringToListAnother(topIndustryListStr,
+                    Industry.class);
+        } else {
+            topIndustryList = industryService.getTopIndustryList();
+            redis.set(TOP_INDUSTRY_LIST, GsonUtils.object2String(topIndustryList));
+        }
 
-        // return CommonResult.success(topIndustryList);
-       return CommonResult.success(industryService.getTopIndustryList());
+        return CommonResult.success(topIndustryList);
+       // return CommonResult.success(industryService.getTopIndustryList());
     }
 
     /**
@@ -48,26 +51,26 @@ public class IndustryController {
     public CommonResult getThirdListByTop(
             @PathVariable("topIndustryId") String topIndustryId) {
 
-//         String thirdKey = THIRD_INDUSTRY_LIST + ":byTopId:" + topIndustryId;
+        String thirdKey = THIRD_INDUSTRY_LIST + ":byTopId:" + topIndustryId;
+
+        // 先从redis中查询，如果没有，再从db中查询后并且放入到redis中
+        String thirdIndustryListStr = redis.get(thirdKey);
+        List<Industry> thirdIndustryList = null;
+        if (StrUtil.isNotBlank(thirdIndustryListStr)) {
+            thirdIndustryList = GsonUtils.stringToListAnother(thirdIndustryListStr, Industry.class);
+        } else {
+            thirdIndustryList = industryService.getThirdListByTop(topIndustryId);
+//            redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
+            // 避免缓存穿透，增加设空机制
+            if (!CollUtil.isEmpty(thirdIndustryList)) {
+                redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
+            } else {
+                redis.set(thirdKey, "[]", 10 * 60);
+            }
+        }
 //
-//         // 先从redis中查询，如果没有，再从db中查询后并且放入到redis中
-//         String thirdIndustryListStr = redis.get(thirdKey);
-//         List<Industry> thirdIndustryList = null;
-//         if (StringUtils.isNotBlank(thirdIndustryListStr)) {
-//             thirdIndustryList = GsonUtils.stringToListAnother(thirdIndustryListStr, Industry.class);
-//         } else {
-//             thirdIndustryList = industryService.getThirdListByTop(topIndustryId);
-// //            redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
-//             // 避免缓存穿透，增加设空机制
-//             if (!CollectionUtils.isEmpty(thirdIndustryList)) {
-//                 redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
-//             } else {
-//                 redis.set(thirdKey, "[]", 10 * 60);
-//             }
-//         }
-//
-//         return GraceJSONResult.ok(thirdIndustryList);
-       return CommonResult.success(industryService.getThirdListByTop(topIndustryId));
+        return CommonResult.success(thirdIndustryList);
+//        return CommonResult.success(industryService.getThirdListByTop(topIndustryId));
     }
 
 
@@ -95,7 +98,7 @@ public class IndustryController {
         // 节点创建
         industryService.createIndustry(industry);
 
-//        resetRedisIndustry(industry);
+       resetRedisIndustry(industry);
 
         return CommonResult.success();
     }
@@ -132,7 +135,7 @@ public class IndustryController {
     @PostMapping("updateNode")
     public CommonResult updateNode(@RequestBody Industry industry) {
         industryService.updateIndustry(industry);
-//        resetRedisIndustry(industry);
+       resetRedisIndustry(industry);
         return CommonResult.success();
     }
 
@@ -149,10 +152,55 @@ public class IndustryController {
             }
         }
 
-//        resetRedisIndustry(temp);
+        resetRedisIndustry(temp);
         industryService.removeById(industryId);
 
 
         return CommonResult.success();
     }
+
+
+    private void resetRedisIndustry(Industry industry) {
+        if (industry.getLevel() == 1) {
+            // 一级节点的增删改，则删除Redis中现有的TOP_INDUSTRY_LIST
+            redis.del(TOP_INDUSTRY_LIST);
+
+            // 删除之后，再次把最新的数据设置到Redis中
+            List<Industry> topIndustryList = industryService.getTopIndustryList();
+            redis.set(TOP_INDUSTRY_LIST, GsonUtils.object2String(topIndustryList));
+
+            // 缓存双删
+            try {
+                Thread.sleep(200);
+                redis.del(TOP_INDUSTRY_LIST);
+                redis.set(TOP_INDUSTRY_LIST, GsonUtils.object2String(topIndustryList));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else if (industry.getLevel() == 3) {
+
+            // 根据当前三级节点的id，获得对应的一级节点id
+            String topIndustryId = industryService.getTopIndustryId(industry.getId());
+
+            // 三级节点的增删改，则删除Redis中现有的THIRD_INDUSTRY_LIST
+            String thirdKey = THIRD_INDUSTRY_LIST + ":byTopId:" + topIndustryId;
+            redis.del(thirdKey);
+
+            // 删除之后，再次把最新的数据设置到Redis中
+            List<Industry> thirdIndustryList = industryService.getThirdListByTop(topIndustryId);
+            redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
+
+            // 缓存双删
+            try {
+                Thread.sleep(300);
+                redis.del(thirdKey);
+                redis.set(thirdKey, GsonUtils.object2String(thirdIndustryList));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // 新增与修改二级节点，没有任何影响，因为在该基础上的三级节点的总数并没有增减。
+        // 删除二级节点，必须先删除三级节点，如此则会删除对应top下的所有三级列表，所以也无需操作
+    }
+
 }

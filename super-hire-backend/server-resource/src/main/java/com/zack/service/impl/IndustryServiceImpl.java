@@ -79,6 +79,14 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry>
         map.put("topIndustryId", topIndustryId);
         return industryMapperCustom.getThirdIndustryByTop(map);
     }
+
+    @Override
+    public String getTopIndustryId(String thirdIndustryId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("thirdIndustryId", thirdIndustryId);
+
+        return industryMapperCustom.getTopIndustryId(map);
+    }
 }
 
 

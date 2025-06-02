@@ -14,4 +14,12 @@
     </select>
 
 
+    <select id="getTopIndustryId" parameterType="map" resultType="string">
+        select top.id from industry third
+                               right join industry `second`
+                                          ON third.father_id=`second`.id
+                               right join industry top
+                                          ON `second`.father_id=top.id
+        WHERE third.id=#{paramMap.thirdIndustryId}
+    </select>
 </mapper>

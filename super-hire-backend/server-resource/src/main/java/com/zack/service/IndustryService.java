@@ -36,4 +36,5 @@ public interface IndustryService extends IService<Industry> {
 
     Long getChildrenIndustryCounts(String industryId);
     List<Industry> getThirdListByTop(String topIndustryId);
+    String getTopIndustryId(String thirdIndustryId);
 }
