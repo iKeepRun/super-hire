@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zack.mapper.DataDictionaryMapper">
+
+    <resultMap id="BaseResultMap" type="com.zack.domain.DataDictionary">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="typeCode" column="type_code" jdbcType="VARCHAR"/>
+            <result property="typeName" column="type_name" jdbcType="VARCHAR"/>
+            <result property="itemKey" column="item_key" jdbcType="VARCHAR"/>
+            <result property="itemValue" column="item_value" jdbcType="VARCHAR"/>
+            <result property="sort" column="sort" jdbcType="INTEGER"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="enable" column="enable" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type_code,type_name,
+        item_key,item_value,sort,
+        icon,enable
+    </sql>
+</mapper>
