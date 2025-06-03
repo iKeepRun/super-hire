@@ -3,7 +3,10 @@ package com.zack.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.zack.base.BaseInfoProperties;
 import com.zack.bo.DataDictionaryBO;
+import com.zack.common.CommonPage;
 import com.zack.common.ResponseStatusEnum;
 import com.zack.domain.DataDictionary;
 import com.zack.exceptions.ErrorCode;
@@ -15,13 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
 * @author chenzhiqiang
 * @description 针对表【data_dictionary(数据字典表)】的数据库操作Service实现
 * @createDate 2025-05-17 10:19:37
 */
 @Service
-public class DataDictionaryServiceImpl extends ServiceImpl<DataDictionaryMapper, DataDictionary>
+public class DataDictionaryServiceImpl extends BaseInfoProperties
     implements DataDictionaryService{
 
     @Autowired
@@ -56,6 +61,20 @@ public class DataDictionaryServiceImpl extends ServiceImpl<DataDictionaryMapper,
 
     }
 
+
+    @Override
+    public CommonPage<DataDictionary> getDataDictListPaged(String typeName, String itemValue, Integer page, Integer limit) {
+        PageHelper.startPage(page, limit);
+        List<DataDictionary> dataDictionaryList = dataDictionaryMapper.selectList(
+                new QueryWrapper<DataDictionary>()
+                        .like("type_name", typeName)
+                        .like("item_value", itemValue)
+                        .orderByAsc("type_code")
+                        .orderByAsc("sort"));
+
+
+        return setPage(dataDictionaryList,page);
+    }
 }
 
 

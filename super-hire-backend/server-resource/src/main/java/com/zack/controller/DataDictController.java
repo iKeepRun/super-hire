@@ -1,13 +1,14 @@
 package com.zack.controller;
 
 import com.zack.bo.DataDictionaryBO;
+import com.zack.common.CommonPage;
+import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
+import com.zack.domain.DataDictionary;
 import com.zack.service.DataDictionaryService;
+import com.zack.service.IndustryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -17,7 +18,9 @@ import javax.validation.Valid;
 public class DataDictController {
 
     @Autowired
-    private DataDictionaryService dictionaryService;
+    private DataDictionaryService dataDictionaryService;
+    @Autowired
+    private IndustryService industryService;
 
     /**
      * 创建数据字典
@@ -29,7 +32,17 @@ public class DataDictController {
     public GraceJSONResult create(
             @RequestBody @Valid DataDictionaryBO dataDictionaryBO) {
 
-        dictionaryService.createOrUpdateDataDictionary(dataDictionaryBO);
+        dataDictionaryService.createOrUpdateDataDictionary(dataDictionaryBO);
         return GraceJSONResult.ok();
+    }
+
+    @PostMapping("list")
+    public CommonResult<CommonPage<DataDictionary>> list(String typeName,
+                                                         String itemValue,
+                                                         @RequestParam(defaultValue = "1") Integer page,
+                                                         @RequestParam(defaultValue = "20") Integer limit) {
+       CommonPage commonPage=dataDictionaryService.getDataDictListPaged( typeName, itemValue, page, limit);
+
+       return CommonResult.success(commonPage);
     }
 }
