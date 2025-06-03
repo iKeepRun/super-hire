@@ -6,19 +6,28 @@ import com.zack.base.BaseInfoProperties;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Industry;
+import com.zack.mq.MQDelayConfig_industry;
 import com.zack.service.IndustryService;
 import com.zack.utils.GsonUtils;
+import com.zack.utils.LocalDateUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-
+@Slf4j
 @RestController
 @RequestMapping("industry")
 public class IndustryController extends BaseInfoProperties {
    @Autowired
    private IndustryService industryService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
 
     /**
@@ -98,7 +107,7 @@ public class IndustryController extends BaseInfoProperties {
         // 节点创建
         industryService.createIndustry(industry);
 
-       resetRedisIndustry(industry);
+       // resetRedisIndustry(industry);
 
         return CommonResult.success();
     }
@@ -135,7 +144,7 @@ public class IndustryController extends BaseInfoProperties {
     @PostMapping("updateNode")
     public CommonResult updateNode(@RequestBody Industry industry) {
         industryService.updateIndustry(industry);
-       resetRedisIndustry(industry);
+       // resetRedisIndustry(industry);
         return CommonResult.success();
     }
 
@@ -152,7 +161,7 @@ public class IndustryController extends BaseInfoProperties {
             }
         }
 
-        resetRedisIndustry(temp);
+        // resetRedisIndustry(temp);
         industryService.removeById(industryId);
 
 
@@ -203,4 +212,24 @@ public class IndustryController extends BaseInfoProperties {
         // 删除二级节点，必须先删除三级节点，如此则会删除对应top下的所有三级列表，所以也无需操作
     }
 
+
+
+    @PostMapping("refreshIndustryCache")
+    public CommonResult refreshIndustryCache(){
+        //计算明天凌晨的时间
+        LocalDateTime futureTime = LocalDateUtils.parseLocalDateTime(LocalDateUtils.getTomorrow() + " 03:00:00", LocalDateUtils.DATETIME_PATTERN);
+        
+        //计算现在到明天凌晨的时间差
+        Long publishTime = LocalDateUtils.getChronoUnitBetween(LocalDateTime.now(), futureTime, ChronoUnit.MILLIS, true);
+        // int time = publishTime.intValue();
+        Integer time=10*1000;
+        rabbitTemplate.convertAndSend(
+                MQDelayConfig_industry.DELAY_EXCHANGE,
+                MQDelayConfig_industry.DELAY_ROUTING_KEY,
+                "refresh",
+                MQDelayConfig_industry.messagePostProcessor(time) // 延时10秒
+                );
+        log.info("延时消息发送成功，时间为：{}", LocalDateTime.now());
+        return CommonResult.success();
+    }
 }

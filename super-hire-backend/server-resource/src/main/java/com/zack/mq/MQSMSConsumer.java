@@ -1,6 +1,5 @@
 package com.zack.mq;
 
-import com.google.gson.JsonObject;
 import com.rabbitmq.client.Channel;
 import com.zack.utils.GsonUtils;
 import com.zack.utils.SMSUtils;
@@ -15,13 +14,13 @@ public class MQSMSConsumer {
     @Autowired
     private SMSUtils smsUtils;
 
-    @RabbitListener(queues = {MQConfig.SMS_QUEUE})
+    @RabbitListener(queues = {MQSMSConfig.SMS_QUEUE})
     public void receive(String payload, Message message, Channel channel) throws Exception {
         try {
             //获取routerkey
             String routingKey = message.getMessageProperties().getReceivedRoutingKey();
 
-            if (routingKey.equals(MQConfig.SMS_ROUTING_KEY)) {
+            if (routingKey.equals(MQSMSConfig.SMS_ROUTING_KEY)) {
                 log.info("收到消息：" + payload);
                 SMSContentQO smsContentQO = GsonUtils.stringToBean(payload, SMSContentQO.class);
 

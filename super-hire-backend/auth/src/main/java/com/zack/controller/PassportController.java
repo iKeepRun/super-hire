@@ -1,7 +1,6 @@
 package com.zack.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
@@ -16,7 +15,7 @@ import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.feign.WorkMicroFeign;
 import com.zack.mapper.UsersMapper;
-import com.zack.mq.MQConfig;
+import com.zack.mq.MQSMSConfig;
 import com.zack.mq.SMSContentQO;
 import com.zack.utils.GsonUtils;
 import com.zack.utils.IPUtil;
@@ -39,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @description:App端注册登录接口
@@ -103,7 +101,7 @@ public class PassportController extends BaseInfoProperties {
 
           //使用mq异步解耦短信发送
         for (int i = 0; i < 10; i++) {
-            rabbitTemplate.convertAndSend(MQConfig.SMS_EXCHANGE,MQConfig.SMS_ROUTING_KEY, GsonUtils.object2String(smsContentQO), messagePostProcessor);
+            rabbitTemplate.convertAndSend(MQSMSConfig.SMS_EXCHANGE, MQSMSConfig.SMS_ROUTING_KEY, GsonUtils.object2String(smsContentQO), messagePostProcessor);
         }
 
         //存储手机验证码

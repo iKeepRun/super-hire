@@ -2,6 +2,7 @@ package com.zack.service;
 
 import com.zack.domain.Industry;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zack.vo.TopIndustryWithThirdListVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -37,4 +38,6 @@ public interface IndustryService extends IService<Industry> {
     Long getChildrenIndustryCounts(String industryId);
     List<Industry> getThirdListByTop(String topIndustryId);
     String getTopIndustryId(String thirdIndustryId);
+
+    List<TopIndustryWithThirdListVO> getAllThirdIndustryList();
 }

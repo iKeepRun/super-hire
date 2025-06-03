@@ -2,6 +2,7 @@ package com.zack.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zack.domain.Industry;
+import com.zack.vo.TopIndustryWithThirdListVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,6 +22,9 @@ public interface IndustryMapperCustom {
 
     String getTopIndustryId(
             @Param("paramMap") Map<String, Object> map);
+
+
+    List<TopIndustryWithThirdListVO> getAllThirdIndustryList();
 }
 
 

@@ -6,10 +6,12 @@ import com.zack.domain.Industry;
 import com.zack.mapper.IndustryMapperCustom;
 import com.zack.service.IndustryService;
 import com.zack.mapper.IndustryMapper;
+import com.zack.vo.TopIndustryWithThirdListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,11 @@ public class IndustryServiceImpl extends ServiceImpl<IndustryMapper, Industry>
         map.put("thirdIndustryId", thirdIndustryId);
 
         return industryMapperCustom.getTopIndustryId(map);
+    }
+
+    @Override
+    public List<TopIndustryWithThirdListVO> getAllThirdIndustryList() {
+        return industryMapperCustom.getAllThirdIndustryList();
     }
 }
 

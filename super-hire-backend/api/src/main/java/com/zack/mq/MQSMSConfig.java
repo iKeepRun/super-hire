@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class MQConfig {
+public class MQSMSConfig {
 
        public static final String SMS_EXCHANGE = "sms-exchange";
        public static final String SMS_QUEUE = "sms-queue";

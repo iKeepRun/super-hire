@@ -17,6 +17,11 @@ spring:
         acknowledge-mode: manual   #手动ack确认
         prefetch: 2     #每次从队列获取2条消息
 
+  redis:
+    host: 192.168.1.104
+    port: 16379
+    database: 0
+
 # 配置日志级别
 logging:
   level:
