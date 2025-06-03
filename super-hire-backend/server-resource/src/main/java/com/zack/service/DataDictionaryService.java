@@ -22,4 +22,18 @@ public interface DataDictionaryService  {
                                                     String itemValue,
                                                     Integer page,
                                                     Integer limit);
+
+    /**
+     * 根据Id获得数据字典
+     * @param dictId
+     * @return
+     */
+    public DataDictionary getDataDictionary(String dictId);
+
+
+    /**
+     * 删除数据字典
+     * @param dictId
+     */
+    public void deleteDataDictionary(String dictId);
 }

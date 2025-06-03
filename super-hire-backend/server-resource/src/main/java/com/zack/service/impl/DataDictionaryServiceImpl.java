@@ -75,6 +75,20 @@ public class DataDictionaryServiceImpl extends BaseInfoProperties
 
         return setPage(dataDictionaryList,page);
     }
+
+
+    @Override
+    public DataDictionary getDataDictionary(String dictId) {
+        return dataDictionaryMapper.selectById(dictId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteDataDictionary(String dictId) {
+        int res = dataDictionaryMapper.deleteById(dictId);
+        ThrowUtil.throwIf(res == 0,ErrorCode.DATA_DICT_DELETE_ERROR);
+        // if (res == 0 ) GraceException.display(ResponseStatusEnum.DATA_DICT_DELETE_ERROR);
+    }
 }
 
 

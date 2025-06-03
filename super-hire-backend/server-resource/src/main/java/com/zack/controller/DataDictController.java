@@ -1,5 +1,6 @@
 package com.zack.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.zack.bo.DataDictionaryBO;
 import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
@@ -44,5 +45,44 @@ public class DataDictController {
        CommonPage commonPage=dataDictionaryService.getDataDictListPaged( typeName, itemValue, page, limit);
 
        return CommonResult.success(commonPage);
+    }
+
+    /**
+     * 修改数据字典
+     * @param dataDictionaryBO
+     * @return
+     */
+    @PostMapping("modify")
+    public GraceJSONResult modify(
+            @RequestBody @Valid DataDictionaryBO dataDictionaryBO) {
+
+        if (StrUtil.isBlank(dataDictionaryBO.getId())) {
+            return GraceJSONResult.error();
+        }
+
+        dataDictionaryService.createOrUpdateDataDictionary(dataDictionaryBO);
+        return GraceJSONResult.ok();
+    }
+
+    /**
+     * 根据id查询数据字典某一项
+     * @param dictId
+     * @return
+     */
+    @PostMapping("item")
+    public GraceJSONResult item(String dictId) {
+        DataDictionary dd = dataDictionaryService.getDataDictionary(dictId);
+        return GraceJSONResult.ok(dd);
+    }
+
+    /**
+     * 删除数据字典
+     * @param dictId
+     * @return
+     */
+    @PostMapping("delete")
+    public GraceJSONResult delete(String dictId) {
+        dataDictionaryService.deleteDataDictionary(dictId);
+        return GraceJSONResult.ok();
     }
 }
