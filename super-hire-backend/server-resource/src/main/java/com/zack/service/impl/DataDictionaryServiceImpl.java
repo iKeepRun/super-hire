@@ -9,6 +9,7 @@ import com.zack.bo.DataDictionaryBO;
 import com.zack.common.CommonPage;
 import com.zack.common.ResponseStatusEnum;
 import com.zack.domain.DataDictionary;
+import com.zack.enums.YesOrNo;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.service.DataDictionaryService;
@@ -88,6 +89,18 @@ public class DataDictionaryServiceImpl extends BaseInfoProperties
         int res = dataDictionaryMapper.deleteById(dictId);
         ThrowUtil.throwIf(res == 0,ErrorCode.DATA_DICT_DELETE_ERROR);
         // if (res == 0 ) GraceException.display(ResponseStatusEnum.DATA_DICT_DELETE_ERROR);
+    }
+    @Override
+    public List<DataDictionary> getDataByCode(String typeCode) {
+
+        List<DataDictionary> ddList = dataDictionaryMapper.selectList(
+                new QueryWrapper<DataDictionary>()
+                        .eq("type_code", typeCode)
+                        .eq("enable", YesOrNo.YES.type)
+                        .orderByAsc("sort")
+        );
+
+        return ddList;
     }
 }
 

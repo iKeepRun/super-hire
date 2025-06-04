@@ -6,6 +6,8 @@ import com.zack.domain.DataDictionary;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
 * @author chenzhiqiang
 * @description 针对表【data_dictionary(数据字典表)】的数据库操作Service
@@ -36,4 +38,11 @@ public interface DataDictionaryService  {
      * @param dictId
      */
     public void deleteDataDictionary(String dictId);
+
+    /**
+     * 根据字典码获得数据字典列表
+     * @param typeCode
+     * @return
+     */
+    public List<DataDictionary> getDataByCode(String typeCode);
 }

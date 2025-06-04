@@ -1,23 +1,27 @@
 package com.zack.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.zack.base.BaseInfoProperties;
 import com.zack.bo.DataDictionaryBO;
 import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.DataDictionary;
+import com.zack.exceptions.ErrorCode;
 import com.zack.service.DataDictionaryService;
 import com.zack.service.IndustryService;
+import com.zack.utils.GsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
 @RequestMapping("dataDict")
-public class DataDictController {
-
+public class DataDictController extends BaseInfoProperties{
+    private static final String DDKEY_PREFIX = DATA_DICTIONARY_LIST_TYPECODE + ":";
     @Autowired
     private DataDictionaryService dataDictionaryService;
     @Autowired
@@ -30,11 +34,11 @@ public class DataDictController {
      * @return
      */
     @PostMapping("create")
-    public GraceJSONResult create(
+    public CommonResult create(
             @RequestBody @Valid DataDictionaryBO dataDictionaryBO) {
 
         dataDictionaryService.createOrUpdateDataDictionary(dataDictionaryBO);
-        return GraceJSONResult.ok();
+        return CommonResult.success();
     }
 
     @PostMapping("list")
@@ -53,15 +57,15 @@ public class DataDictController {
      * @return
      */
     @PostMapping("modify")
-    public GraceJSONResult modify(
+    public CommonResult modify(
             @RequestBody @Valid DataDictionaryBO dataDictionaryBO) {
 
         if (StrUtil.isBlank(dataDictionaryBO.getId())) {
-            return GraceJSONResult.error();
+            return CommonResult.error(ErrorCode.PARAMS_ERROR);
         }
 
         dataDictionaryService.createOrUpdateDataDictionary(dataDictionaryBO);
-        return GraceJSONResult.ok();
+        return CommonResult.success();
     }
 
     /**
@@ -70,9 +74,9 @@ public class DataDictController {
      * @return
      */
     @PostMapping("item")
-    public GraceJSONResult item(String dictId) {
+    public CommonResult item(String dictId) {
         DataDictionary dd = dataDictionaryService.getDataDictionary(dictId);
-        return GraceJSONResult.ok(dd);
+        return CommonResult.success(dd);
     }
 
     /**
@@ -81,8 +85,34 @@ public class DataDictController {
      * @return
      */
     @PostMapping("delete")
-    public GraceJSONResult delete(String dictId) {
+    public CommonResult delete(String dictId) {
         dataDictionaryService.deleteDataDictionary(dictId);
-        return GraceJSONResult.ok();
+        return CommonResult.success();
+    }
+
+
+    /**
+     * 根据字典码获得该分类下的所有数据字典项的列表
+     * @param typeCode
+     * @return
+     */
+    @PostMapping("app/getDataByCode")
+    public CommonResult getDataByCode(String typeCode) {
+
+        if (StrUtil.isBlank(typeCode)) {
+            return CommonResult.error(ErrorCode.PARAMS_ERROR);
+        }
+
+        String ddkey = DDKEY_PREFIX + typeCode;
+
+        String ddListStr = redis.get(ddkey);
+        List<DataDictionary> list = null;
+        if (StrUtil.isNotBlank(ddListStr)) {
+            list = GsonUtils.stringToListAnother(ddListStr, DataDictionary.class);
+        }
+
+        // 只从redis中查询，如果没有就没有，也不需要从数据库中查询，完全避免缓存的穿透击穿雪崩问题
+//        List<DataDictionary> list = dictionaryService.getDataByCode(typeCode);
+        return CommonResult.success(list);
     }
 }
