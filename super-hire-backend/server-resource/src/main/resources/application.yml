@@ -25,7 +25,7 @@ spring:
 # 配置日志级别
 logging:
   level:
-    root: info
+    top.javatool.canal.client: warn
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml
@@ -42,3 +42,8 @@ jasypt:
     password: superhire
 
 
+canal:
+  destination: superhire
+  server: 192.168.1.104:11111
+  user-name: canal
+  password: canal
