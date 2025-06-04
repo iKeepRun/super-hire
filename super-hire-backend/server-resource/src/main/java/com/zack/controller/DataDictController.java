@@ -5,7 +5,7 @@ import com.zack.base.BaseInfoProperties;
 import com.zack.bo.DataDictionaryBO;
 import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
-import com.zack.common.GraceJSONResult;
+
 import com.zack.domain.DataDictionary;
 import com.zack.exceptions.ErrorCode;
 import com.zack.service.DataDictionaryService;
