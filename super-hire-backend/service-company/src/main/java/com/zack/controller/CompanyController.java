@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.ReviewCompanyBO;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Company;
@@ -12,6 +13,7 @@ import com.zack.exceptions.ThrowUtil;
 import com.zack.feign.UserInfoMicroFeign;
 import com.zack.service.CompanyService;
 import com.zack.vo.CompanySimpleVO;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -115,5 +117,32 @@ public class CompanyController extends BaseInfoProperties {
             // 不为空，直接转换对象
             return new Gson().fromJson(companyJson, CompanySimpleVO.class);
         }
+    }
+
+
+
+    /**
+     * 提交企业的审核信息
+     * @param reviewCompanyBO
+     * @return
+     */
+    @PostMapping("goReviewCompany")
+    @GlobalTransactional
+    public CommonResult goReviewCompany(
+            @RequestBody @Valid ReviewCompanyBO reviewCompanyBO) {
+
+        // 1. 微服务调用，绑定HR企业id
+        CommonResult result = userInfoMicroFeign.bindingHRToCompany(
+                reviewCompanyBO.getHrUserId(),
+                reviewCompanyBO.getRealname(),
+                reviewCompanyBO.getCompanyId());
+        String hrMobile = result.getData().toString();
+//        System.out.println(hrMobile);
+
+        // 2. 保存审核信息，修改状态为[3：审核中（等待审核）]
+        reviewCompanyBO.setHrMobile(hrMobile);
+        companyService.commitReviewCompanyInfo(reviewCompanyBO);
+
+        return CommonResult.success();
     }
 }

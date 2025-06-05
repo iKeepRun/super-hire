@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
 import com.zack.common.CommonResult;
+
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
@@ -76,4 +77,40 @@ public class UserInfoController extends BaseInfoProperties {
 
         return CommonResult.success(hrCounts);
     }
+
+
+    /**
+     * 绑定企业和hr用户的关系
+     * @param hrUserId
+     * @param realname
+     * @param companyId
+     * @return
+     */
+    @PostMapping("bindingHRToCompany")
+    public CommonResult bindingHRToCompany(
+            @RequestParam("hrUserId") String hrUserId,
+            @RequestParam("realname") String realname,
+            @RequestParam("companyId") String companyId) {
+
+        usersService.updateUserCompanyId(hrUserId,
+                realname,
+                companyId);
+
+        Users hrUser = usersService.getById(hrUserId);
+
+        return CommonResult.success(hrUser.getMobile());
+    }
+
+
+    /**
+     * 刷新用户信息，传递最新的用户信息以及刷新token给前端
+     * @param userId
+     * @return
+     */
+    @PostMapping("freshUserInfo")
+    public CommonResult freshUserInfo(@RequestParam("userId") String userId) {
+        UsersVO usersVO = getUserInfo(userId, true);
+        return CommonResult.success(usersVO);
+    }
+
 }

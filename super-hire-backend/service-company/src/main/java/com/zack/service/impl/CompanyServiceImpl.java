@@ -3,6 +3,7 @@ package com.zack.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.ReviewCompanyBO;
 import com.zack.domain.Company;
 import com.zack.enums.CompanyReviewStatus;
 import com.zack.enums.YesOrNo;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -74,6 +76,26 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company getById(String id) {
         return companyMapper.selectById(id);
+    }
+
+    @Transactional
+    @Override
+    public void commitReviewCompanyInfo(ReviewCompanyBO reviewCompanyBO) {
+
+        Company pendingCompany = new Company();
+        pendingCompany.setId(reviewCompanyBO.getCompanyId());
+
+        pendingCompany.setReviewStatus(CompanyReviewStatus.REVIEW_ING.type);
+        pendingCompany.setReviewReplay(""); // 如果有内容，则重置覆盖之前的审核意见
+        pendingCompany.setAuthLetter(reviewCompanyBO.getAuthLetter());
+
+        pendingCompany.setCommitUserId(reviewCompanyBO.getHrUserId());
+        pendingCompany.setCommitUserMobile(reviewCompanyBO.getHrMobile());
+        pendingCompany.setCommitDate(LocalDate.now());
+
+        pendingCompany.setUpdatedTime(LocalDateTime.now());
+
+        companyMapper.updateById(pendingCompany);
     }
 }
 

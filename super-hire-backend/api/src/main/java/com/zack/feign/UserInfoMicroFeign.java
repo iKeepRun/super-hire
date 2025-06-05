@@ -15,4 +15,10 @@ public interface UserInfoMicroFeign {
     @PostMapping("/userinfo/getCountsByCompanyId")
     CommonResult getCountsByCompanyId(
             @RequestParam("companyId") String companyId);
+
+    @PostMapping("/userinfo/bindingHRToCompany")
+     CommonResult bindingHRToCompany(
+            @RequestParam("hrUserId") String hrUserId,
+            @RequestParam("realname") String realname,
+            @RequestParam("companyId") String companyId);
 }

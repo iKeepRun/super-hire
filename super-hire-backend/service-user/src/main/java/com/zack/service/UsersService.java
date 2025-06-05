@@ -13,4 +13,7 @@ public interface UsersService {
     void modifyUserInfo(ModifyUserDTO  modifyUserDTO);
     public Users getById(String uid);
     Long getCountsByCompanyId(String companyId);
+    void updateUserCompanyId(String hrUserId,
+                        String realname,
+                        String companyId);
 }

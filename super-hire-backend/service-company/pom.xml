@@ -29,5 +29,11 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+        <!--分布式事务-->
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+            <version>1.6.0</version>
+        </dependency>
     </dependencies>
 </project>

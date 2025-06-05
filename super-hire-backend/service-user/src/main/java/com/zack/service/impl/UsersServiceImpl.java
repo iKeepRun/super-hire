@@ -11,6 +11,7 @@ import com.zack.mapper.UsersMapper;
 import com.zack.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -46,5 +47,21 @@ public class UsersServiceImpl implements UsersService {
         );
 
         return counts;
+    }
+
+
+    @Transactional
+    @Override
+    public void updateUserCompanyId(String hrUserId,
+                                    String realname,
+                                    String companyId) {
+        Users hrUser = new Users();
+        hrUser.setId(hrUserId);
+        hrUser.setRealName(realname);
+        hrUser.setHrInWhichCompanyId(companyId);
+
+        hrUser.setUpdatedTime(LocalDateTime.now());
+
+        usersMapper.updateById(hrUser);
     }
 }
