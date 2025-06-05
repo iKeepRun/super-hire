@@ -35,4 +35,5 @@ public interface CompanyService {
                                                Integer limit);
 
     CompanyInfoVO getCompanyInfo(String companyId);
+    void updateReviewInfo(ReviewCompanyBO reviewCompanyBO);
 }

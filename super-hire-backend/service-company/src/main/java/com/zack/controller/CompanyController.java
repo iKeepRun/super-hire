@@ -10,6 +10,7 @@ import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Company;
+import com.zack.enums.CompanyReviewStatus;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.feign.UserInfoMicroFeign;
@@ -158,13 +159,13 @@ public class CompanyController extends BaseInfoProperties {
      * @return
      */
     @PostMapping("information")
-    public GraceJSONResult information(String hrUserId) {
+    public CommonResult information(String hrUserId) {
 
         UsersVO hrUser = getHRInfoVO(hrUserId);
 
         CompanySimpleVO company = getCompany(hrUser.getHrInWhichCompanyId());
 
-        return GraceJSONResult.ok(company);
+        return CommonResult.success(company);
     }
 
     private UsersVO getHRInfoVO(String hrUserId) {
@@ -203,11 +204,35 @@ public class CompanyController extends BaseInfoProperties {
      * @return
      */
     @PostMapping("admin/getCompanyInfo")
-    public GraceJSONResult getCompanyInfo(String companyId) {
+    public CommonResult getCompanyInfo(String companyId) {
 
         CompanyInfoVO companyInfo = companyService.getCompanyInfo(companyId);
 
-        return GraceJSONResult.ok(companyInfo);
+        return CommonResult.success(companyInfo);
     }
 
+
+
+    /**
+     * 企业审核通过，用户成为HR角色
+     * @param reviewCompanyBO
+     * @return
+     */
+    @PostMapping("admin/doReview")
+    public CommonResult getCompanyInfo(
+            @RequestBody @Valid ReviewCompanyBO reviewCompanyBO) {
+
+        // 1. 审核企业
+        companyService.updateReviewInfo(reviewCompanyBO);
+
+        // 2. 如果审核成功，则更新用户角色成为HR
+        if (reviewCompanyBO.getReviewStatus() == CompanyReviewStatus.SUCCESSFUL.type) {
+            userInfoMicroFeign.changeUserToHR(reviewCompanyBO.getHrUserId());
+        }
+
+        // 3. 清除用户端的企业缓存
+        redis.del(REDIS_COMPANY_BASE_INFO + ":" + reviewCompanyBO.getCompanyId());
+
+        return CommonResult.success();
+    }
 }

@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
+import com.zack.enums.UserRole;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.mapper.UsersMapper;
@@ -59,6 +60,19 @@ public class UsersServiceImpl implements UsersService {
         hrUser.setId(hrUserId);
         hrUser.setRealName(realname);
         hrUser.setHrInWhichCompanyId(companyId);
+
+        hrUser.setUpdatedTime(LocalDateTime.now());
+
+        usersMapper.updateById(hrUser);
+    }
+
+    @Transactional
+    @Override
+    public void updateUserToHR(String uid) {
+
+        Users hrUser = new Users();
+        hrUser.setId(uid);
+        hrUser.setRole(UserRole.RECRUITER.type);
 
         hrUser.setUpdatedTime(LocalDateTime.now());
 

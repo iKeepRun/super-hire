@@ -141,6 +141,22 @@ public class CompanyServiceImpl extends BaseInfoProperties implements CompanySer
         CompanyInfoVO companyInfo = companyMapperCustom.getCompanyInfo(map);
         return companyInfo;
     }
+
+
+    @Transactional
+    @Override
+    public void updateReviewInfo(ReviewCompanyBO reviewCompanyBO) {
+
+        Company pendingCompany = new Company();
+        pendingCompany.setId(reviewCompanyBO.getCompanyId());
+
+        pendingCompany.setReviewStatus(reviewCompanyBO.getReviewStatus());
+        pendingCompany.setReviewReplay(reviewCompanyBO.getReviewReplay());
+
+        pendingCompany.setUpdatedTime(LocalDateTime.now());
+
+        companyMapper.updateById(pendingCompany);
+    }
 }
 
 

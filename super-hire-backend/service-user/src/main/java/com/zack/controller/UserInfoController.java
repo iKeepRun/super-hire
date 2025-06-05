@@ -123,5 +123,14 @@ public class UserInfoController extends BaseInfoProperties {
         UsersVO usersVO = getUserInfo(userId, false);
         return CommonResult.success(usersVO);
     }
-
+    /**
+     * 转换身份成为hr
+     * @param hrUserId
+     * @return
+     */
+    @PostMapping("changeUserToHR")
+    public GraceJSONResult changeUserToHR(@RequestParam("hrUserId") String hrUserId) {
+        usersService.updateUserToHR(hrUserId);
+        return GraceJSONResult.ok();
+    }
 }
