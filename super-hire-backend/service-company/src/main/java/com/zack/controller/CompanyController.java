@@ -4,7 +4,9 @@ import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.QueryCompanyBO;
 import com.zack.bo.ReviewCompanyBO;
+import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Company;
@@ -12,7 +14,9 @@ import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.feign.UserInfoMicroFeign;
 import com.zack.service.CompanyService;
+import com.zack.utils.JsonUtils;
 import com.zack.vo.CompanySimpleVO;
+import com.zack.vo.UsersVO;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,5 +148,51 @@ public class CompanyController extends BaseInfoProperties {
         companyService.commitReviewCompanyInfo(reviewCompanyBO);
 
         return CommonResult.success();
+    }
+
+
+    /**
+     * 根据hr的用户id查询最新的企业信息
+     * @param hrUserId
+     * @return
+     */
+    @PostMapping("information")
+    public GraceJSONResult information(String hrUserId) {
+
+        UsersVO hrUser = getHRInfoVO(hrUserId);
+
+        CompanySimpleVO company = getCompany(hrUser.getHrInWhichCompanyId());
+
+        return GraceJSONResult.ok(company);
+    }
+
+    private UsersVO getHRInfoVO(String hrUserId) {
+        CommonResult commonResult = userInfoMicroFeign.get(hrUserId);
+        Object data = commonResult.getData();
+
+        String json = JsonUtils.objectToJson(data);
+        UsersVO hrUser = JsonUtils.jsonToPojo(json, UsersVO.class);
+        return hrUser;
+    }
+
+
+    // **************************** 以上为用户端所使用 ****************************
+
+    // **************************** 以下为运营平台所使用 ****************************
+
+    @PostMapping("admin/getCompanyList")
+    public CommonResult adminGetCompanyList(
+            @RequestBody @Valid QueryCompanyBO companyBO,
+            Integer page,
+            Integer limit) {
+
+        if (page == null) page = 1;
+        if (limit == null) limit = 10;
+
+        CommonPage commonPage = companyService.queryCompanyList(
+                companyBO,
+                page,
+                limit);
+        return CommonResult.success(commonPage);
     }
 }

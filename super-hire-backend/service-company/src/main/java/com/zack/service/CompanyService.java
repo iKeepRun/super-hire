@@ -1,9 +1,12 @@
 package com.zack.service;
 
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.QueryCompanyBO;
 import com.zack.bo.ReviewCompanyBO;
+import com.zack.common.CommonPage;
 import com.zack.domain.Company;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zack.vo.CompanyInfoVO;
 
 /**
  * @author chenzhiqiang
@@ -26,4 +29,8 @@ public interface CompanyService {
     Company getById(String id);
 
     void commitReviewCompanyInfo(ReviewCompanyBO reviewCompanyBO);
+
+    CommonPage<CompanyInfoVO> queryCompanyList(QueryCompanyBO companyBO,
+                                               Integer page,
+                                               Integer limit);
 }

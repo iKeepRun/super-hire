@@ -113,4 +113,15 @@ public class UserInfoController extends BaseInfoProperties {
         return CommonResult.success(usersVO);
     }
 
+    /**
+     * 获得用户信息
+     * @param userId
+     * @return
+     */
+    @PostMapping("get")
+    public CommonResult get(@RequestParam("userId") String userId) {
+        UsersVO usersVO = getUserInfo(userId, false);
+        return CommonResult.success(usersVO);
+    }
+
 }

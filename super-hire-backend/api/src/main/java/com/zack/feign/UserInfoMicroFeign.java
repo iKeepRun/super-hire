@@ -17,8 +17,11 @@ public interface UserInfoMicroFeign {
             @RequestParam("companyId") String companyId);
 
     @PostMapping("/userinfo/bindingHRToCompany")
-     CommonResult bindingHRToCompany(
+    CommonResult bindingHRToCompany(
             @RequestParam("hrUserId") String hrUserId,
             @RequestParam("realname") String realname,
             @RequestParam("companyId") String companyId);
+
+    @PostMapping("get")
+    CommonResult get(@RequestParam("userId") String userId);
 }

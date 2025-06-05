@@ -1,21 +1,33 @@
 package com.zack.service.impl;
 
+import cn.hutool.core.lang.hash.Hash;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.zack.base.BaseInfoProperties;
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.QueryCompanyBO;
 import com.zack.bo.ReviewCompanyBO;
+import com.zack.common.CommonPage;
 import com.zack.domain.Company;
 import com.zack.enums.CompanyReviewStatus;
 import com.zack.enums.YesOrNo;
+import com.zack.mapper.CompanyMapperCustom;
 import com.zack.service.CompanyService;
 import com.zack.mapper.CompanyMapper;
+import com.zack.vo.CompanyInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author chenzhiqiang
@@ -23,10 +35,11 @@ import java.time.LocalDateTime;
  * @createDate 2025-05-17 10:19:37
  */
 @Service
-public class CompanyServiceImpl implements CompanyService {
+public class CompanyServiceImpl extends BaseInfoProperties implements CompanyService {
     @Autowired
     private CompanyMapper companyMapper;
-
+    @Autowired
+    private CompanyMapperCustom companyMapperCustom;
     @Override
     public Company getByFullName(String fullName) {
         Company tempCompany = companyMapper.selectOne(
@@ -96,6 +109,26 @@ public class CompanyServiceImpl implements CompanyService {
         pendingCompany.setUpdatedTime(LocalDateTime.now());
 
         companyMapper.updateById(pendingCompany);
+    }
+
+
+    @Override
+    public CommonPage<CompanyInfoVO> queryCompanyList(QueryCompanyBO companyBO,
+                                                Integer page,
+                                                Integer limit){
+        PageHelper.startPage(page, limit);
+
+        Map<String,Object> map=new HashMap<>();
+        map.put("companyName", companyBO.getCompanyName());
+        map.put("realName", companyBO.getCommitUser());
+        map.put("reviewStatus", companyBO.getReviewStatus());
+        map.put("commitDateStart", companyBO.getCommitDateStart());
+        map.put("commitDateEnd", companyBO.getCommitDateEnd());
+
+
+        List<CompanyInfoVO> companyInfoVOList = companyMapperCustom.queryCompanyList(map);
+
+        return setPage(companyInfoVOList,page);
     }
 }
 
