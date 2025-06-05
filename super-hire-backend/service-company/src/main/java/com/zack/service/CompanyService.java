@@ -33,4 +33,6 @@ public interface CompanyService {
     CommonPage<CompanyInfoVO> queryCompanyList(QueryCompanyBO companyBO,
                                                Integer page,
                                                Integer limit);
+
+    CompanyInfoVO getCompanyInfo(String companyId);
 }

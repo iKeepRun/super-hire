@@ -1,10 +1,7 @@
 package com.zack.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zack.bo.QueryCompanyBO;
-import com.zack.common.CommonPage;
-import com.zack.domain.Company;
 import com.zack.vo.CompanyInfoVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,9 +13,13 @@ import java.util.Map;
 * @createDate 2025-05-17 10:19:37
 * @Entity com.zack.domain.Company
 */
+@Mapper
 public interface CompanyMapperCustom  {
 
-    List<CompanyInfoVO> queryCompanyList(@Param("paramMap") Map map);
+    List<CompanyInfoVO> queryCompanyList(@Param("paramMap") Map<String,Object> map);
+
+    CompanyInfoVO getCompanyInfo(@Param("paramMap") Map<String,Object> map);
+
 }
 
 

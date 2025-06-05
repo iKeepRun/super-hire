@@ -15,6 +15,7 @@ import com.zack.exceptions.ThrowUtil;
 import com.zack.feign.UserInfoMicroFeign;
 import com.zack.service.CompanyService;
 import com.zack.utils.JsonUtils;
+import com.zack.vo.CompanyInfoVO;
 import com.zack.vo.CompanySimpleVO;
 import com.zack.vo.UsersVO;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -195,4 +196,18 @@ public class CompanyController extends BaseInfoProperties {
                 limit);
         return CommonResult.success(commonPage);
     }
+
+    /**
+     * 根据企业id获得最新企业数据
+     * @param companyId
+     * @return
+     */
+    @PostMapping("admin/getCompanyInfo")
+    public GraceJSONResult getCompanyInfo(String companyId) {
+
+        CompanyInfoVO companyInfo = companyService.getCompanyInfo(companyId);
+
+        return GraceJSONResult.ok(companyInfo);
+    }
+
 }

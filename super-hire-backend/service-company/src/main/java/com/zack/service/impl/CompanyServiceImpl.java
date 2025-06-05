@@ -130,6 +130,17 @@ public class CompanyServiceImpl extends BaseInfoProperties implements CompanySer
 
         return setPage(companyInfoVOList,page);
     }
+
+
+    @Override
+    public CompanyInfoVO getCompanyInfo(String companyId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("companyId", companyId);
+
+        CompanyInfoVO companyInfo = companyMapperCustom.getCompanyInfo(map);
+        return companyInfo;
+    }
 }
 
 
