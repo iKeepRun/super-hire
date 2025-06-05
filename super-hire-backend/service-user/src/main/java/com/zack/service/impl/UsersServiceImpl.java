@@ -2,6 +2,7 @@ package com.zack.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
 import com.zack.exceptions.ErrorCode;
@@ -34,5 +35,16 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users getById(String uid) {
         return usersMapper.selectById(uid);
+    }
+
+    @Override
+    public Long getCountsByCompanyId(String companyId) {
+
+        Long counts = usersMapper.selectCount(
+                new QueryWrapper<Users>()
+                        .eq("hr_in_which_company_id", companyId)
+        );
+
+        return counts;
     }
 }

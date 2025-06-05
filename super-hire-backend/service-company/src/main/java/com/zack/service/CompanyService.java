@@ -18,4 +18,5 @@ public interface CompanyService {
     public Company getByFullName(String fullName);
     String resetNewCompany(CreateCompanyBO createCompanyBO);
     String createNewCompany(CreateCompanyBO createCompanyBO);
+    Company getById(String id);
 }

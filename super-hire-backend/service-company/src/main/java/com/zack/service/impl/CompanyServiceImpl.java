@@ -70,6 +70,11 @@ public class CompanyServiceImpl implements CompanyService {
 
         return createCompanyBO.getCompanyId();
     }
+
+    @Override
+    public Company getById(String id) {
+        return companyMapper.selectById(id);
+    }
 }
 
 

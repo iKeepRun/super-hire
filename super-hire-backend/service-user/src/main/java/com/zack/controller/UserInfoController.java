@@ -1,8 +1,10 @@
 package com.zack.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
 import com.zack.common.CommonResult;
+import com.zack.common.GraceJSONResult;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
 import com.zack.service.UsersService;
@@ -10,10 +12,7 @@ import com.zack.utils.JWTUtils;
 import com.zack.vo.UsersVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/userinfo")
@@ -51,5 +50,30 @@ public class UserInfoController extends BaseInfoProperties {
             usersVO.setUserToken(uToken);
         }
         return usersVO;
+    }
+
+    /**
+     * 根据企业id，查询绑定的hr数量有多少
+     * @param companyId
+     * @return
+     */
+    @PostMapping("getCountsByCompanyId")
+    public CommonResult getCountsByCompanyId(
+            @RequestParam("companyId") String companyId) {
+
+        String hrCountsStr = redis.get(REDIS_COMPANY_HR_COUNTS + ":" + companyId);
+        Long hrCounts = 0l;
+        if (StrUtil.isBlank(hrCountsStr)) {
+
+            hrCounts = usersService.getCountsByCompanyId(companyId);
+            redis.set(REDIS_COMPANY_HR_COUNTS + ":" + companyId,
+                    hrCounts + "",
+                    1 * 60);
+            // FIXME: 此处有缓存击穿的风险，思考结合业务，怎么处理更好？
+        } else {
+            hrCounts = Long.valueOf(hrCountsStr);
+        }
+
+        return CommonResult.success(hrCounts);
     }
 }

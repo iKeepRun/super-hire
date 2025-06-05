@@ -1,12 +1,15 @@
 package com.zack.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.google.gson.Gson;
+import com.zack.base.BaseInfoProperties;
 import com.zack.bo.CreateCompanyBO;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Company;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
+import com.zack.feign.UserInfoMicroFeign;
 import com.zack.service.CompanyService;
 import com.zack.vo.CompanySimpleVO;
 import org.springframework.beans.BeanUtils;
@@ -20,10 +23,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/company")
-public class CompanyController {
+public class CompanyController extends BaseInfoProperties {
   @Autowired
   private CompanyService companyService;
 
+  @Autowired
+  private UserInfoMicroFeign userInfoMicroFeign;
     /**
      * 根据全称查询企业信息
      * @param fullName
@@ -63,5 +68,52 @@ public class CompanyController {
         }
 
         return CommonResult.success(doCompanyId);
+    }
+
+
+    /**
+     * 获得企业信息
+     * @param companyId
+     * @param withHRCounts
+     * @return
+     */
+    @PostMapping("getInfo")
+    public CommonResult getInfo(String companyId, boolean withHRCounts) {
+
+        CompanySimpleVO companySimpleVO = getCompany(companyId);
+        // 根据companyId获得旗下有多少个hr绑定，微服务的远程调用
+        if (withHRCounts && companySimpleVO != null) {
+            CommonResult graceJSONResult =
+                    userInfoMicroFeign.getCountsByCompanyId(companyId);
+            Object data = graceJSONResult.getData();
+            Long hrCounts = Long.valueOf(data.toString());
+            companySimpleVO.setHrCounts(hrCounts);
+        }
+
+        return CommonResult.success(companySimpleVO);
+    }
+
+    private CompanySimpleVO getCompany(String companyId) {
+        if (StrUtil.isBlank(companyId)) return null;
+
+        String companyJson = redis.get(REDIS_COMPANY_BASE_INFO + ":" + companyId);
+        if (StrUtil.isBlank(companyJson)) {
+            // 查询数据库
+            Company company = companyService.getById(companyId);
+            if (company == null) {
+                return null;
+            }
+
+            CompanySimpleVO simpleVO = new CompanySimpleVO();
+            BeanUtils.copyProperties(company, simpleVO);
+
+            redis.set(REDIS_COMPANY_BASE_INFO + ":" + companyId,
+                    new Gson().toJson(simpleVO),
+                    1 * 60);
+            return simpleVO;
+        } else {
+            // 不为空，直接转换对象
+            return new Gson().fromJson(companyJson, CompanySimpleVO.class);
+        }
     }
 }
