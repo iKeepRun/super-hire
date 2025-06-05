@@ -148,6 +148,22 @@ public class FileController extends BaseInfoProperties {
     }
 
 
+    @PostMapping("uploadAuthLetter")
+    public CommonResult uploadAuthLetter(@RequestParam("file") MultipartFile file) throws Exception {
+
+        // 获得文件原始名称
+        String filename = file.getOriginalFilename();
+        if (StrUtil.isBlank(filename)) {
+            return CommonResult.error(ErrorCode.FILE_UPLOAD_NULL_ERROR);
+        }
+
+        filename = "company/AuthLetter/" + dealFilename(filename);
+        String imageUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                filename,
+                file.getInputStream(),
+                true);
+        return CommonResult.success(imageUrl);
+    }
     private String dealFilename(String filename) {
         String suffixName = filename.substring(filename.lastIndexOf("."));
         String fName = filename.substring(0, filename.lastIndexOf("."));
