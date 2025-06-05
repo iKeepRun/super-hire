@@ -1,5 +1,6 @@
 package com.zack.service;
 
+import com.zack.bo.CreateCompanyBO;
 import com.zack.domain.Company;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -15,4 +16,6 @@ public interface CompanyService {
      * @return
      */
     public Company getByFullName(String fullName);
+    String resetNewCompany(CreateCompanyBO createCompanyBO);
+    String createNewCompany(CreateCompanyBO createCompanyBO);
 }
