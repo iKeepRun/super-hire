@@ -10,10 +10,12 @@ import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Company;
+import com.zack.domain.Users;
 import com.zack.enums.CompanyReviewStatus;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.feign.UserInfoMicroFeign;
+import com.zack.inteceptor.JwtCurrentUserInteceptor;
 import com.zack.service.CompanyService;
 import com.zack.utils.JsonUtils;
 import com.zack.vo.CompanyInfoVO;
@@ -175,6 +177,70 @@ public class CompanyController extends BaseInfoProperties {
         String json = JsonUtils.objectToJson(data);
         UsersVO hrUser = JsonUtils.jsonToPojo(json, UsersVO.class);
         return hrUser;
+    }
+
+    /**
+     * saas获得企业基础信息
+     * @return
+     */
+    @PostMapping("info")
+    public CommonResult info() {
+
+        Users currentUser = JwtCurrentUserInteceptor.currentUser.get();
+
+        CompanySimpleVO companyInfo = getCompany(currentUser.getHrInWhichCompanyId());
+
+        return CommonResult.success(companyInfo);
+    }
+
+    /**
+     * saas获得查询企业详情
+     * @return
+     */
+    @PostMapping("saas/moreInfo")
+    public GraceJSONResult saasMoreInfo() {
+
+        Users currentUser = JwtCurrentUserInteceptor.currentUser.get();
+
+        CompanyInfoVO companyInfo = getCompanyMoreInfo(
+                currentUser.getHrInWhichCompanyId());
+
+        return GraceJSONResult.ok(companyInfo);
+    }
+
+
+    /**
+     * app用户端获得查询企业详情
+     * @return
+     */
+    @PostMapping("moreInfo")
+    public GraceJSONResult moreInfo(String companyId) {
+        CompanyInfoVO companyInfo = getCompanyMoreInfo(companyId);
+        return GraceJSONResult.ok(companyInfo);
+    }
+
+    private CompanyInfoVO getCompanyMoreInfo(String companyId) {
+        if (StrUtil.isBlank(companyId)) return null;
+
+        String companyJson = redis.get(REDIS_COMPANY_MORE_INFO + ":" + companyId);
+        if (StrUtil.isBlank(companyJson)) {
+            // 查询数据库
+            Company company = companyService.getById(companyId);
+            if (company == null) {
+                return null;
+            }
+
+            CompanyInfoVO infoVO = new CompanyInfoVO();
+            BeanUtils.copyProperties(company, infoVO);
+
+            redis.set(REDIS_COMPANY_MORE_INFO + ":" + companyId,
+                    new Gson().toJson(infoVO),
+                    1 * 60);
+            return infoVO;
+        } else {
+            // 不为空，直接转换对象
+            return new Gson().fromJson(companyJson, CompanyInfoVO.class);
+        }
     }
 
 
