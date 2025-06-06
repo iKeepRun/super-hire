@@ -20,9 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -170,4 +168,31 @@ public class FileController extends BaseInfoProperties {
         String uuid = UUID.randomUUID().toString();
         return fName + "-" + uuid + suffixName;
     }
+
+
+    @PostMapping("uploadPhoto")
+    public CommonResult uploadPhoto(
+            @RequestParam("files") MultipartFile[] files,
+            String companyId) throws Exception {
+
+        if (StrUtil.isBlank(companyId)) companyId = "";
+
+        List<String> fileList = new ArrayList<>();
+
+        for (MultipartFile f : files) {
+            // 获得文件原始名称
+            String filename = f.getOriginalFilename();
+
+            filename = "company/" + companyId + "/photo/" + dealFilename(filename);
+            String imageUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                    filename,
+                    f.getInputStream(),
+                    true);
+            fileList.add(imageUrl);
+        }
+
+        return CommonResult.success(fileList);
+    }
+
+
 }

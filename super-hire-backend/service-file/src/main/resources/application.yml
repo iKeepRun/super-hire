@@ -18,8 +18,8 @@ logging:
     root: info
 
 minio:
-  endpoint: http://localhost:19000   #oss地址
-  fileHost: http://localhost:19000   #文件地址host
+  endpoint: http://192.168.1.104:19000   #oss地址
+  fileHost: http://192.168.1.104:19000   #文件地址host
   accessKey: ROOTNAME
   secretKey: CHANGEME123
   bucketName: super-hire
