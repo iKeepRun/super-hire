@@ -1,17 +1,21 @@
 package com.zack.service.impl;
 
 import cn.hutool.core.lang.hash.Hash;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.zack.base.BaseInfoProperties;
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.ModifyCompanyInfoBO;
 import com.zack.bo.QueryCompanyBO;
 import com.zack.bo.ReviewCompanyBO;
 import com.zack.common.CommonPage;
 import com.zack.domain.Company;
 import com.zack.enums.CompanyReviewStatus;
 import com.zack.enums.YesOrNo;
+import com.zack.exceptions.ErrorCode;
+import com.zack.exceptions.ThrowUtil;
 import com.zack.mapper.CompanyMapperCustom;
 import com.zack.service.CompanyService;
 import com.zack.mapper.CompanyMapper;
@@ -156,6 +160,25 @@ public class CompanyServiceImpl extends BaseInfoProperties implements CompanySer
         pendingCompany.setUpdatedTime(LocalDateTime.now());
 
         companyMapper.updateById(pendingCompany);
+    }
+
+    @Override
+    public void modifyCompanyInfo(ModifyCompanyInfoBO companyInfoBO, Integer num) {
+        String companyId= companyInfoBO.getCompanyId();
+
+        ThrowUtil.throwIf(StrUtil.isBlank(companyId), ErrorCode.PARAMS_ERROR);
+
+        Company penddingCompany = new Company();
+        penddingCompany.setId(companyInfoBO.getCompanyId());
+        penddingCompany.setUpdatedTime(LocalDateTime.now());
+
+        BeanUtils.copyProperties(companyInfoBO, penddingCompany);
+
+        companyMapper.updateById(penddingCompany);
+        //删除企业缓存信息
+        redis.del(REDIS_COMPANY_BASE_INFO+":"+companyId);
+        redis.del(REDIS_COMPANY_MORE_INFO+":"+companyId);
+
     }
 }
 

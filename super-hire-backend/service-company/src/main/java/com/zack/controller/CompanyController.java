@@ -4,11 +4,13 @@ import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.ModifyCompanyInfoBO;
 import com.zack.bo.QueryCompanyBO;
 import com.zack.bo.ReviewCompanyBO;
 import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
+import com.zack.common.ResponseStatusEnum;
 import com.zack.domain.Company;
 import com.zack.domain.Users;
 import com.zack.enums.CompanyReviewStatus;
@@ -243,6 +245,45 @@ public class CompanyController extends BaseInfoProperties {
         }
     }
 
+
+    /**
+     * 维护企业信息
+     * @param companyInfoBO
+     * @return
+     */
+    @PostMapping("modify")
+    public CommonResult modify(
+            @RequestBody ModifyCompanyInfoBO companyInfoBO,
+            Integer num) throws Exception {
+
+//        if (num!=null && num>1) {
+//            Thread.sleep(5000);
+//        }
+
+        // 判断当前用户绑定的企业，是否和修改的企业一致，如果不一致，则异常
+        checkUser(companyInfoBO.getCurrentUserId(), companyInfoBO.getCompanyId());
+
+        // 修改企业信息
+        companyService.modifyCompanyInfo(companyInfoBO, num);
+
+        // 企业相册信息的保存
+        // if (StrUtil.isNotBlank(companyInfoBO.getPhotos())) {
+        //     companyService.savePhotos(companyInfoBO);
+        // }
+
+        return CommonResult.success();
+    }
+
+    /**
+     * 校验企业下的HR是否OK
+     * @param currentUserId
+     * @param companyId
+     */
+    private void checkUser(String currentUserId, String companyId) {
+        ThrowUtil.throwIf(StrUtil.isBlank(currentUserId),ErrorCode.COMPANY_INFO_UPDATED_ERROR);
+        UsersVO hrUser = getHRInfoVO(currentUserId);
+        ThrowUtil.throwIf(hrUser != null && !hrUser.getHrInWhichCompanyId().equalsIgnoreCase(companyId),ErrorCode.COMPANY_INFO_UPDATED_NO_AUTH_ERROR);
+    }
 
     // **************************** 以上为用户端所使用 ****************************
 

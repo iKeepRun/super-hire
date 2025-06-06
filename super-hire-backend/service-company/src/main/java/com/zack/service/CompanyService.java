@@ -1,6 +1,7 @@
 package com.zack.service;
 
 import com.zack.bo.CreateCompanyBO;
+import com.zack.bo.ModifyCompanyInfoBO;
 import com.zack.bo.QueryCompanyBO;
 import com.zack.bo.ReviewCompanyBO;
 import com.zack.common.CommonPage;
@@ -37,4 +38,7 @@ public interface CompanyService {
     CompanyInfoVO getCompanyInfo(String companyId);
 
     void updateReviewInfo(ReviewCompanyBO reviewCompanyBO);
+
+    void modifyCompanyInfo(ModifyCompanyInfoBO companyInfoBO,
+                      Integer num);
 }
