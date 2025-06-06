@@ -200,14 +200,14 @@ public class CompanyController extends BaseInfoProperties {
      * @return
      */
     @PostMapping("saas/moreInfo")
-    public GraceJSONResult saasMoreInfo() {
+    public CommonResult saasMoreInfo() {
 
         Users currentUser = JwtCurrentUserInteceptor.currentUser.get();
 
         CompanyInfoVO companyInfo = getCompanyMoreInfo(
                 currentUser.getHrInWhichCompanyId());
 
-        return GraceJSONResult.ok(companyInfo);
+        return CommonResult.success(companyInfo);
     }
 
 
@@ -216,9 +216,9 @@ public class CompanyController extends BaseInfoProperties {
      * @return
      */
     @PostMapping("moreInfo")
-    public GraceJSONResult moreInfo(String companyId) {
+    public CommonResult moreInfo(String companyId) {
         CompanyInfoVO companyInfo = getCompanyMoreInfo(companyId);
-        return GraceJSONResult.ok(companyInfo);
+        return CommonResult.success(companyInfo);
     }
 
     private CompanyInfoVO getCompanyMoreInfo(String companyId) {
@@ -267,11 +267,33 @@ public class CompanyController extends BaseInfoProperties {
         companyService.modifyCompanyInfo(companyInfoBO, num);
 
         // 企业相册信息的保存
-        // if (StrUtil.isNotBlank(companyInfoBO.getPhotos())) {
-        //     companyService.savePhotos(companyInfoBO);
-        // }
+        if (StrUtil.isNotBlank(companyInfoBO.getPhotos())) {
+            companyService.savePhotos(companyInfoBO);
+        }
 
         return CommonResult.success();
+    }
+
+
+    /**
+     * 获得企业相册内容
+     * @param companyId
+     * @return
+     */
+    @PostMapping("getPhotos")
+    public CommonResult getPhotos(String companyId) {
+        return CommonResult.success(companyService.getPhotos(companyId));
+    }
+
+    /**
+     * 获得企业相册内容
+     * @return
+     */
+    @PostMapping("saas/getPhotos")
+    public CommonResult getPhotosSaas() {
+        String companyId = JwtCurrentUserInteceptor.currentUser.get()
+                .getHrInWhichCompanyId();
+        return CommonResult.success(companyService.getPhotos(companyId));
     }
 
     /**

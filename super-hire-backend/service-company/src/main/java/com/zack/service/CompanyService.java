@@ -7,6 +7,7 @@ import com.zack.bo.ReviewCompanyBO;
 import com.zack.common.CommonPage;
 import com.zack.domain.Company;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zack.domain.CompanyPhoto;
 import com.zack.vo.CompanyInfoVO;
 
 /**
@@ -41,4 +42,6 @@ public interface CompanyService {
 
     void modifyCompanyInfo(ModifyCompanyInfoBO companyInfoBO,
                       Integer num);
+    void savePhotos(ModifyCompanyInfoBO modifyCompanyInfoBO);
+    CompanyPhoto getPhotos(String  companyId);
 }

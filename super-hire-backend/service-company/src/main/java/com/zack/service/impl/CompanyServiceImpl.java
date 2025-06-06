@@ -3,6 +3,7 @@ package com.zack.service.impl;
 import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.zack.base.BaseInfoProperties;
@@ -12,11 +13,13 @@ import com.zack.bo.QueryCompanyBO;
 import com.zack.bo.ReviewCompanyBO;
 import com.zack.common.CommonPage;
 import com.zack.domain.Company;
+import com.zack.domain.CompanyPhoto;
 import com.zack.enums.CompanyReviewStatus;
 import com.zack.enums.YesOrNo;
 import com.zack.exceptions.ErrorCode;
 import com.zack.exceptions.ThrowUtil;
 import com.zack.mapper.CompanyMapperCustom;
+import com.zack.mapper.CompanyPhotoMapper;
 import com.zack.service.CompanyService;
 import com.zack.mapper.CompanyMapper;
 import com.zack.vo.CompanyInfoVO;
@@ -44,6 +47,8 @@ public class CompanyServiceImpl extends BaseInfoProperties implements CompanySer
     private CompanyMapper companyMapper;
     @Autowired
     private CompanyMapperCustom companyMapperCustom;
+    @Autowired
+    private CompanyPhotoMapper companyPhotoMapper;
     @Override
     public Company getByFullName(String fullName) {
         Company tempCompany = companyMapper.selectOne(
@@ -179,6 +184,33 @@ public class CompanyServiceImpl extends BaseInfoProperties implements CompanySer
         redis.del(REDIS_COMPANY_BASE_INFO+":"+companyId);
         redis.del(REDIS_COMPANY_MORE_INFO+":"+companyId);
 
+    }
+
+    /**
+     * 修改企业相册
+     * @param modifyCompanyInfoBO
+     */
+    @Override
+    public void savePhotos(ModifyCompanyInfoBO modifyCompanyInfoBO) {
+        String companyId=modifyCompanyInfoBO.getCompanyId();
+        CompanyPhoto companyPhoto=new CompanyPhoto();
+        companyPhoto.setCompanyId(companyId);
+        companyPhoto.setPhotos(modifyCompanyInfoBO.getPhotos());
+
+        //判断是否有企业相册
+        CompanyPhoto tempPhoto = getPhotos(companyId);
+        if (tempPhoto==null){
+            companyPhotoMapper.insert(companyPhoto);
+        }else{
+            companyPhotoMapper.update(companyPhoto,new UpdateWrapper<CompanyPhoto>().eq(
+                    "company_id",companyId
+            ));
+        }
+    }
+
+    @Override
+    public CompanyPhoto getPhotos(String companyId) {
+        return companyPhotoMapper.selectOne(new QueryWrapper<CompanyPhoto>().eq("company_id", companyId));
     }
 }
 
