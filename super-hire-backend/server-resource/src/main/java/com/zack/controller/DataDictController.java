@@ -3,14 +3,18 @@ package com.zack.controller;
 import cn.hutool.core.util.StrUtil;
 import com.zack.base.BaseInfoProperties;
 import com.zack.bo.DataDictionaryBO;
+import com.zack.bo.QueryDictItemsBO;
 import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 
+import com.zack.common.GraceJSONResult;
 import com.zack.domain.DataDictionary;
 import com.zack.exceptions.ErrorCode;
 import com.zack.service.DataDictionaryService;
 import com.zack.service.IndustryService;
 import com.zack.utils.GsonUtils;
+import com.zack.vo.CompanyPointsVO;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -113,6 +117,30 @@ public class DataDictController extends BaseInfoProperties{
 
         // 只从redis中查询，如果没有就没有，也不需要从数据库中查询，完全避免缓存的穿透击穿雪崩问题
 //        List<DataDictionary> list = dictionaryService.getDataByCode(typeCode);
+        return CommonResult.success(list);
+    }
+
+
+
+    @PostMapping("app/getItemsByKeys")
+    public CommonResult getItemsByKeys(@RequestBody QueryDictItemsBO itemsBO) {
+
+        String advantage[] = itemsBO.getAdvantage();
+        String benefits[] = itemsBO.getBenefits();
+        String bonus[] = itemsBO.getBonus();
+        String subsidy[] = itemsBO.getSubsidy();
+
+        List<DataDictionary> advantageList = dataDictionaryService.getItemsByKeys(advantage);
+        List<DataDictionary> benefitsList = dataDictionaryService.getItemsByKeys(benefits);
+        List<DataDictionary> bonusList = dataDictionaryService.getItemsByKeys(bonus);
+        List<DataDictionary> subsidyList = dataDictionaryService.getItemsByKeys(subsidy);
+
+        CompanyPointsVO list = new CompanyPointsVO();
+        list.setAdvantageList(advantageList);
+        list.setBenefitsList(benefitsList);
+        list.setBonusList(bonusList);
+        list.setSubsidyList(subsidyList);
+
         return CommonResult.success(list);
     }
 }
