@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
-* @author chenzhiqiang
-* @description 针对表【data_dictionary(数据字典表)】的数据库操作Service
-* @createDate 2025-05-17 10:19:37
-*/
-public interface DataDictionaryService  {
+ * @author chenzhiqiang
+ * @description 针对表【data_dictionary(数据字典表)】的数据库操作Service
+ * @createDate 2025-05-17 10:19:37
+ */
+public interface DataDictionaryService {
     /**
      * 创建或者更新数据字典
+     *
      * @param dataDictionaryBO
      */
     public void createOrUpdateDataDictionary(DataDictionaryBO dataDictionaryBO);
@@ -27,6 +28,7 @@ public interface DataDictionaryService  {
 
     /**
      * 根据Id获得数据字典
+     *
      * @param dictId
      * @return
      */
@@ -35,15 +37,18 @@ public interface DataDictionaryService  {
 
     /**
      * 删除数据字典
+     *
      * @param dictId
      */
     public void deleteDataDictionary(String dictId);
 
     /**
      * 根据字典码获得数据字典列表
+     *
      * @param typeCode
      * @return
      */
-    public List<DataDictionary> getDataByCode(String typeCode);
+    List<DataDictionary> getDataByCode(String typeCode);
+
     List<DataDictionary> getItemsByKeys(String... keys);
 }

@@ -12,14 +12,18 @@ import com.zack.domain.DataDictionary;
 import com.zack.exceptions.ErrorCode;
 import com.zack.service.DataDictionaryService;
 import com.zack.service.IndustryService;
+import com.zack.thread.MyThreadPool;
 import com.zack.utils.GsonUtils;
 import com.zack.vo.CompanyPointsVO;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 @RestController
@@ -122,8 +126,8 @@ public class DataDictController extends BaseInfoProperties{
 
 
 
-    @PostMapping("app/getItemsByKeys")
-    public CommonResult getItemsByKeys(@RequestBody QueryDictItemsBO itemsBO) {
+    @PostMapping("app/getItemsByKeys1")
+    public CommonResult getItemsByKeys1(@RequestBody QueryDictItemsBO itemsBO) {
 
         String advantage[] = itemsBO.getAdvantage();
         String benefits[] = itemsBO.getBenefits();
@@ -140,6 +144,54 @@ public class DataDictController extends BaseInfoProperties{
         list.setBenefitsList(benefitsList);
         list.setBonusList(bonusList);
         list.setSubsidyList(subsidyList);
+
+        return CommonResult.success(list);
+    }
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+
+    /**
+     * 使用任务编排+线程池优化字典项接口
+     * @param itemsBO
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @PostMapping("app/getItemsByKeys")
+    public CommonResult getItemsByKeys(@RequestBody QueryDictItemsBO itemsBO) throws ExecutionException, InterruptedException {
+        CompanyPointsVO list = new CompanyPointsVO();
+
+        CompletableFuture advantageFuture=CompletableFuture.supplyAsync(()->{
+            String advantage[] = itemsBO.getAdvantage();
+            List<DataDictionary> advantageList = dataDictionaryService.getItemsByKeys(advantage);
+            list.setAdvantageList(advantageList);
+            return advantageList;
+        },threadPoolTaskExecutor);
+
+        CompletableFuture benefitsFuture=CompletableFuture.supplyAsync(()->{
+            String benefits[] = itemsBO.getBenefits();
+            List<DataDictionary> benefitsList = dataDictionaryService.getItemsByKeys(benefits);
+            list.setBenefitsList(benefitsList);
+            return benefitsList;
+        },threadPoolTaskExecutor);
+
+        CompletableFuture bonusFuture=CompletableFuture.supplyAsync(()->{
+            String bonus[] = itemsBO.getBonus();
+            List<DataDictionary> bonusList = dataDictionaryService.getItemsByKeys(bonus);
+            list.setBonusList(bonusList);
+            return bonusList;
+        },threadPoolTaskExecutor);
+
+        CompletableFuture subsidyFuture=CompletableFuture.supplyAsync(()->{
+            String subsidy[] = itemsBO.getSubsidy();
+            List<DataDictionary> subsidyList = dataDictionaryService.getItemsByKeys(subsidy);
+            list.setSubsidyList(subsidyList);
+            return subsidyList;
+        },threadPoolTaskExecutor);
+
+
+       CompletableFuture.allOf(advantageFuture,benefitsFuture,bonusFuture,subsidyFuture).get();
 
         return CommonResult.success(list);
     }
