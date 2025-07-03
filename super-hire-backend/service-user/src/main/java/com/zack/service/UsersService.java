@@ -1,6 +1,7 @@
 package com.zack.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zack.common.CommonPage;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
 
@@ -17,4 +18,6 @@ public interface UsersService {
                         String realname,
                         String companyId);
     void updateUserToHR(String uid);
+
+    CommonPage getHRList(String companyId, Integer page, Integer limit);
 }

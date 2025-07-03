@@ -3,11 +3,13 @@ package com.zack.controller;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
+import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 
 import com.zack.common.GraceJSONResult;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
+import com.zack.inteceptor.JwtCurrentUserInteceptor;
 import com.zack.service.UsersService;
 import com.zack.utils.JWTUtils;
 import com.zack.vo.UsersVO;
@@ -129,8 +131,25 @@ public class UserInfoController extends BaseInfoProperties {
      * @return
      */
     @PostMapping("changeUserToHR")
-    public GraceJSONResult changeUserToHR(@RequestParam("hrUserId") String hrUserId) {
+    public CommonResult changeUserToHR(@RequestParam("hrUserId") String hrUserId) {
         usersService.updateUserToHR(hrUserId);
-        return GraceJSONResult.ok();
+        return CommonResult.success();
+    }
+
+    /**
+     * 查询当前企业下的hr列表
+     * @param page
+     * @param limit
+     * @return
+     */
+    @PostMapping("saas/hrList")
+    public CommonResult<CommonPage> changeUserToHR(Integer page, Integer limit) {
+
+        Users user = JwtCurrentUserInteceptor.currentUser.get();
+        String companyId = user.getHrInWhichCompanyId();
+
+        CommonPage gridResult = usersService.getHRList(companyId, page, limit);
+
+        return CommonResult.success(gridResult);
     }
 }

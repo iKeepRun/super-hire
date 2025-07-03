@@ -3,6 +3,9 @@ package com.zack.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.zack.base.BaseInfoProperties;
+import com.zack.common.CommonPage;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
 import com.zack.enums.UserRole;
@@ -16,9 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Service
-public class UsersServiceImpl implements UsersService {
+public class UsersServiceImpl extends BaseInfoProperties implements UsersService {
     @Autowired
     private UsersMapper usersMapper;
     @Override
@@ -77,5 +81,12 @@ public class UsersServiceImpl implements UsersService {
         hrUser.setUpdatedTime(LocalDateTime.now());
 
         usersMapper.updateById(hrUser);
+    }
+
+    @Override
+    public CommonPage getHRList(String companyId, Integer page, Integer limit) {
+        PageHelper.startPage(page, limit);
+        List<Users> users = usersMapper.selectList(new QueryWrapper<Users>().eq("hr_in_which_company_id", companyId));
+        return setPage(users,page);
     }
 }
