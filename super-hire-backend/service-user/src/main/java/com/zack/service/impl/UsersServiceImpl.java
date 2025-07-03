@@ -83,6 +83,24 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
         usersMapper.updateById(hrUser);
     }
 
+    @Transactional
+    @Override
+    public void updateUserToCand(String hrUserId) {
+
+        Users hrUser = new Users();
+        hrUser.setId(hrUserId);
+        hrUser.setRole(UserRole.CANDIDATE.type);
+
+        /**
+         * update-strategy: not_empty
+         */
+        hrUser.setHrInWhichCompanyId("0");
+
+        hrUser.setUpdatedTime(LocalDateTime.now());
+
+        usersMapper.updateById(hrUser);
+    }
+
     @Override
     public CommonPage getHRList(String companyId, Integer page, Integer limit) {
         PageHelper.startPage(page, limit);

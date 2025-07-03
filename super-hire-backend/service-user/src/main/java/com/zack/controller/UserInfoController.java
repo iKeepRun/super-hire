@@ -137,6 +137,17 @@ public class UserInfoController extends BaseInfoProperties {
     }
 
     /**
+     * 转换身份为普通用户
+     * @param hrUserId
+     * @return
+     */
+    @PostMapping("changeUserToCand")
+    public CommonResult changeUserToCand(@RequestParam("hrUserId") String hrUserId) {
+        usersService.updateUserToCand(hrUserId);
+        return CommonResult.success();
+    }
+
+    /**
      * 查询当前企业下的hr列表
      * @param page
      * @param limit

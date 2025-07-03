@@ -18,6 +18,6 @@ public interface UsersService {
                         String realname,
                         String companyId);
     void updateUserToHR(String uid);
-
+    void updateUserToCand(String hrUserId);
     CommonPage getHRList(String companyId, Integer page, Integer limit);
 }
