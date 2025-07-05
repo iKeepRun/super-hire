@@ -29,7 +29,7 @@ public class SeataRollbackAspect {
     public void begintx(JoinPoint joinPoint) throws Throwable {
         log.info("Seata事务开始");
         //手动开启全局事务
-        GlobalTransaction gt = GlobalTransactionContext.getCurrent();
+        GlobalTransaction gt = GlobalTransactionContext.getCurrentOrCreate();
         gt.begin();
     }
 

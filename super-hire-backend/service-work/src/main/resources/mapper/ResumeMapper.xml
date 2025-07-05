@@ -6,15 +6,15 @@
 
     <resultMap id="BaseResultMap" type="com.zack.domain.Resume">
             <id property="id" column="id" jdbcType="VARCHAR"/>
-            <result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
             <result property="advantage" column="advantage" jdbcType="VARCHAR"/>
-            <result property="advantage_html" column="advantage_html" jdbcType="VARCHAR"/>
+            <result property="advantageHtml" column="advantage_html" jdbcType="VARCHAR"/>
             <result property="credentials" column="credentials" jdbcType="VARCHAR"/>
             <result property="skills" column="skills" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="VARCHAR"/>
-            <result property="refresh_time" column="refresh_time" jdbcType="TIMESTAMP"/>
-            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updated_time" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="refreshTime" column="refresh_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
