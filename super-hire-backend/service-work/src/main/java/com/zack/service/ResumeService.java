@@ -2,16 +2,15 @@ package com.zack.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zack.bo.EditProjectExpBO;
-import com.zack.bo.EditResumeBO;
-import com.zack.bo.EditWorkExpBO;
-import com.zack.domain.Resume;
-import com.zack.domain.ResumeProjectExp;
-import com.zack.domain.ResumeWorkExp;
+import com.zack.bo.*;
+import com.zack.domain.*;
+import com.zack.utils.GsonUtils;
 import com.zack.vo.ResumeVO;
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author chenzhiqiang
@@ -38,4 +37,17 @@ public interface ResumeService {
     public ResumeProjectExp getProjectExp(String projectExpId, String userId);
 
     public void deleteProjectExp(String projectExpId, String userId);
+
+    public void editEducation(EditEducationBO educationBO);
+
+    public ResumeEducation getEducation(String eduId, String userId);
+
+    public void deleteEducation(String eduId, String userId);
+
+    public void editJobExpect(EditResumeExpectBO expectBO);
+
+    public List<ResumeExpect> getMyResumeExpectList(String resumeId, String userId);
+
+    public void deleteResumeExpect(String resumeExpectId, String userId);
+
 }

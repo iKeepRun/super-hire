@@ -2,12 +2,13 @@ package com.zack.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.zack.base.BaseInfoProperties;
-import com.zack.bo.EditProjectExpBO;
-import com.zack.bo.EditResumeBO;
-import com.zack.bo.EditWorkExpBO;
+import com.zack.bo.*;
 import com.zack.common.CommonResult;
 import com.zack.common.CommonResult;
 import com.zack.common.CommonResult;
+import com.zack.common.CommonResult;
+import com.zack.domain.ResumeEducation;
+import com.zack.domain.ResumeExpect;
 import com.zack.domain.ResumeProjectExp;
 import com.zack.domain.ResumeWorkExp;
 import com.zack.service.ResumeService;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/resume")
@@ -170,6 +172,115 @@ public class ResumeController extends BaseInfoProperties {
         }
 
         resumeService.deleteProjectExp(projectExpId, userId);
+
+        return CommonResult.success();
+    }
+
+
+    /**
+     * 新增或修改我的学历
+     * @param educationBO
+     * @return
+     */
+    @PostMapping("editEducation")
+    public CommonResult editEducation(@RequestBody @Valid EditEducationBO educationBO) {
+
+        // TODO EditEducationBO 自行校验
+
+        resumeService.editEducation(educationBO);
+
+        return CommonResult.success();
+    }
+
+    /**
+     * 获得教育经历详情
+     * @param eduId
+     * @param userId
+     * @return
+     */
+    @PostMapping("getEducation")
+    public CommonResult getEducation(String eduId, String userId) {
+
+        if (StrUtil.isBlank(eduId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("教育经历ID或用户ID不能为空");
+        }
+
+        ResumeEducation education = resumeService.getEducation(eduId, userId);
+
+        return CommonResult.success(education);
+    }
+
+    /**
+     * 删除教育经历
+     * @param eduId
+     * @param userId
+     * @return
+     */
+    @PostMapping("deleteEducation")
+    public CommonResult deleteEducation(String eduId, String userId) {
+
+        if (StrUtil.isBlank(eduId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("教育经历ID或用户ID不能为空");
+        }
+
+        resumeService.deleteEducation(eduId, userId);
+
+        return CommonResult.success();
+    }
+
+    /**
+     * 新增或者修改求职期望
+     * @param expectBO
+     * @return
+     */
+    @PostMapping("editJobExpect")
+    public CommonResult editJobExpect(@RequestBody @Valid EditResumeExpectBO expectBO) {
+
+        // TODO EditResumeExpectBO 自行校验
+
+        resumeService.editJobExpect(expectBO);
+
+        return CommonResult.success();
+    }
+
+    /**
+     * 查询求职期望列表
+     * @param resumeId
+     * @param userId
+     * @return
+     */
+    @PostMapping("getMyResumeExpectList")
+    public CommonResult getMyResumeExpectList(String resumeId, String userId) {
+
+        if (StrUtil.isBlank(resumeId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("简历ID或用户ID不能为空");
+        }
+
+        String myResumeExpectListJson = redis.get(REDIS_RESUME_EXPECT + ":" + userId);
+        List<ResumeExpect> expectList = null;
+        if (StrUtil.isBlank(myResumeExpectListJson)) {
+            expectList = resumeService.getMyResumeExpectList(resumeId, userId);
+        } else {
+            expectList = GsonUtils.stringToList(myResumeExpectListJson, ResumeExpect.class);
+        }
+
+        return CommonResult.success(expectList);
+    }
+
+    /**
+     * 删除求职期望
+     * @param resumeExpectId
+     * @param userId
+     * @return
+     */
+    @PostMapping("deleteMyResumeExpect")
+    public CommonResult deleteMyResumeExpect(String resumeExpectId, String userId) {
+
+        if (StrUtil.isBlank(resumeExpectId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("求职期望ID或用户ID不能为空");
+        }
+
+        resumeService.deleteResumeExpect(resumeExpectId, userId);
 
         return CommonResult.success();
     }

@@ -4,17 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zack.base.BaseInfoProperties;
-import com.zack.bo.EditProjectExpBO;
-import com.zack.bo.EditResumeBO;
-import com.zack.bo.EditWorkExpBO;
-import com.zack.domain.Resume;
-import com.zack.domain.ResumeEducation;
-import com.zack.domain.ResumeProjectExp;
-import com.zack.domain.ResumeWorkExp;
-import com.zack.mapper.ResumeMapper;
-import com.zack.mapper.ResumeProjectExpMapper;
-import com.zack.mapper.ResumeWorkExpMapper;
+import com.zack.bo.*;
+import com.zack.domain.*;
+import com.zack.mapper.*;
 import com.zack.service.ResumeService;
+import com.zack.utils.GsonUtils;
 import com.zack.vo.ResumeVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +33,10 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
     private ResumeWorkExpMapper workExpMapper;
     @Autowired
     private ResumeProjectExpMapper projectExpMapper;
-
+    @Autowired
+    private ResumeEducationMapper educationMapper;
+    @Autowired
+    private ResumeExpectMapper expectMapper;
     @Override
     public void initResume(String userId) {
         Resume resume = new Resume();
@@ -88,13 +85,13 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
                         .orderByDesc("begin_date")
         );
 
-        // // 3. 查询项目经验
-        // List<ResumeProjectExp> projectExpList = projectExpMapper.selectList(
-        //         new QueryWrapper<ResumeProjectExp>()
-        //                 .eq("user_id", userId)
-        //                 .eq("resume_id", resume.getId())
-        //                 .orderByDesc("begin_date")
-        // );
+        // 3. 查询项目经验
+        List<ResumeProjectExp> projectExpList = projectExpMapper.selectList(
+                new QueryWrapper<ResumeProjectExp>()
+                        .eq("user_id", userId)
+                        .eq("resume_id", resume.getId())
+                        .orderByDesc("begin_date")
+        );
         //
         // // 4. 查询我的教育经历
         // List<ResumeEducation> educationList = educationMapper.selectList(
@@ -106,7 +103,7 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
         //
         // // 在这里不做多表关联查询，单独查表后再进行组装，避免高并发对数据库的压力
         resumeVO.setWorkExpList(workExpList);
-        // resumeVO.setProjectExpList(projectExpList);
+        resumeVO.setProjectExpList(projectExpList);
         // resumeVO.setEducationList(educationList);
 
         return resumeVO;
@@ -210,6 +207,111 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
 
         redis.del(REDIS_RESUME_INFO + ":" + userId);
     }
+
+
+    @Transactional
+    @Override
+    public void editEducation(EditEducationBO educationBO) {
+
+        ResumeEducation education = new ResumeEducation();
+        BeanUtils.copyProperties(educationBO, education);
+
+        education.setUpdatedTime(LocalDateTime.now());
+
+        if (StrUtil.isBlank(educationBO.getId())) {
+            // 新增
+            education.setCreateTime(LocalDateTime.now());
+            educationMapper.insert(education);
+        } else {
+            // 修改
+            educationMapper.update(education,
+                    new QueryWrapper<ResumeEducation>()
+                            .eq("id", educationBO.getId())
+                            .eq("user_id", educationBO.getUserId())
+                            .eq("resume_id", educationBO.getResumeId())
+            );
+        }
+
+        redis.del(REDIS_RESUME_INFO + ":" + educationBO.getUserId());
+
+    }
+
+    @Override
+    public ResumeEducation getEducation(String eduId, String userId) {
+        ResumeEducation education = educationMapper.selectOne(
+                new QueryWrapper<ResumeEducation>()
+                        .eq("id", eduId)
+                        .eq("user_id", userId)
+        );
+        return education;
+    }
+
+    @Transactional
+    @Override
+    public void deleteEducation(String eduId, String userId) {
+        educationMapper.delete(
+                new QueryWrapper<ResumeEducation>()
+                        .eq("id", eduId)
+                        .eq("user_id", userId)
+        );
+
+        redis.del(REDIS_RESUME_INFO + ":" + userId);
+    }
+
+    @Transactional
+    @Override
+    public void editJobExpect(EditResumeExpectBO expectBO) {
+
+        ResumeExpect resumeExpect = new ResumeExpect();
+        BeanUtils.copyProperties(expectBO, resumeExpect);
+
+        resumeExpect.setUpdatedTime(LocalDateTime.now());
+
+        if (StrUtil.isBlank(expectBO.getId())) {
+            // 新增
+            resumeExpect.setCreateTime(LocalDateTime.now());
+            expectMapper.insert(resumeExpect);
+        } else {
+            // 修改
+            expectMapper.update(resumeExpect,
+                    new QueryWrapper<ResumeExpect>()
+                            .eq("id", expectBO.getId())
+                            .eq("user_id", expectBO.getUserId())
+                            .eq("resume_id", expectBO.getResumeId())
+            );
+        }
+
+        redis.del(REDIS_RESUME_EXPECT + ":" + expectBO.getUserId());
+    }
+
+    @Override
+    public List<ResumeExpect> getMyResumeExpectList(String resumeId, String userId) {
+
+        List<ResumeExpect> expectList = expectMapper.selectList(
+                new QueryWrapper<ResumeExpect>()
+                        .eq("resume_id", resumeId)
+                        .eq("user_id", userId)
+                        .orderByDesc("updated_time")
+        );
+
+        redis.set(REDIS_RESUME_EXPECT + ":" + userId,
+                GsonUtils.object2String(expectList));
+
+        return expectList;
+    }
+
+    @Transactional
+    @Override
+    public void deleteResumeExpect(String resumeExpectId, String userId) {
+        expectMapper.delete(
+                new QueryWrapper<ResumeExpect>()
+                        .eq("id", resumeExpectId)
+                        .eq("user_id", userId)
+        );
+
+        redis.del(REDIS_RESUME_EXPECT + ":" + userId);
+    }
+
 }
 
 
