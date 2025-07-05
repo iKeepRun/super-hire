@@ -1,11 +1,20 @@
 package com.zack.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zack.base.BaseInfoProperties;
+import com.zack.bo.EditResumeBO;
 import com.zack.domain.Resume;
+import com.zack.domain.ResumeEducation;
+import com.zack.domain.ResumeProjectExp;
+import com.zack.domain.ResumeWorkExp;
 import com.zack.mapper.ResumeMapper;
 import com.zack.service.ResumeService;
+import com.zack.vo.ResumeVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -16,8 +25,7 @@ import java.util.Date;
 * @createDate 2025-05-10 22:52:49
 */
 @Service
-public class ResumeServiceImpl extends ServiceImpl<ResumeMapper, Resume>
-    implements ResumeService{
+public class ResumeServiceImpl extends BaseInfoProperties implements ResumeService{
 
     @Autowired
     private ResumeMapper resumeMapper;
@@ -28,6 +36,69 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeMapper, Resume>
         resume.setCreateTime(LocalDateTime.now());
         resume.setUpdatedTime(LocalDateTime.now());
         resumeMapper.insert(resume);
+    }
+
+    @Transactional
+    @Override
+    public void modifyResume(EditResumeBO editResumeBO) {
+
+        Resume resume = new Resume();
+        BeanUtils.copyProperties(editResumeBO, resume);
+
+        resume.setUpdatedTime(LocalDateTime.now());
+
+        resumeMapper.update(resume,
+                new QueryWrapper<Resume>()
+                        .eq("id", editResumeBO.getId())
+                        .eq("user_id", editResumeBO.getUserId())
+        );
+
+        redis.del(REDIS_RESUME_INFO + ":" + editResumeBO.getUserId());
+    }
+
+    @Override
+    public ResumeVO getResumeInfo(String userId) {
+
+        ResumeVO resumeVO = new ResumeVO();
+
+        // 1. 查询简历信息
+        Resume resume = resumeMapper.selectOne(
+                new QueryWrapper<Resume>()
+                        .eq("user_id", userId)
+        );
+        if (resume == null) return null;
+        BeanUtils.copyProperties(resume, resumeVO);
+
+        // 2. 查询工作经验
+        // List<ResumeWorkExp> workExpList = WorkExpMapper.selectList(
+        //         new QueryWrapper<ResumeWorkExp>()
+        //                 .eq("user_id", userId)
+        //                 .eq("resume_id", resume.getId())
+        //                 .orderByDesc("begin_date")
+        // );
+        //
+        // // 3. 查询项目经验
+        // List<ResumeProjectExp> projectExpList = projectExpMapper.selectList(
+        //         new QueryWrapper<ResumeProjectExp>()
+        //                 .eq("user_id", userId)
+        //                 .eq("resume_id", resume.getId())
+        //                 .orderByDesc("begin_date")
+        // );
+        //
+        // // 4. 查询我的教育经历
+        // List<ResumeEducation> educationList = educationMapper.selectList(
+        //         new QueryWrapper<ResumeEducation>()
+        //                 .eq("user_id", userId)
+        //                 .eq("resume_id", resume.getId())
+        //                 .orderByDesc("begin_date")
+        // );
+        //
+        // // 在这里不做多表关联查询，单独查表后再进行组装，避免高并发对数据库的压力
+        // resumeVO.setWorkExpList(workExpList);
+        // resumeVO.setProjectExpList(projectExpList);
+        // resumeVO.setEducationList(educationList);
+
+        return resumeVO;
     }
 }
 
