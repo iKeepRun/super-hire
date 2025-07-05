@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zack.base.BaseInfoProperties;
+import com.zack.bo.EditProjectExpBO;
 import com.zack.bo.EditResumeBO;
 import com.zack.bo.EditWorkExpBO;
 import com.zack.domain.Resume;
@@ -11,6 +12,7 @@ import com.zack.domain.ResumeEducation;
 import com.zack.domain.ResumeProjectExp;
 import com.zack.domain.ResumeWorkExp;
 import com.zack.mapper.ResumeMapper;
+import com.zack.mapper.ResumeProjectExpMapper;
 import com.zack.mapper.ResumeWorkExpMapper;
 import com.zack.service.ResumeService;
 import com.zack.vo.ResumeVO;
@@ -35,6 +37,8 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
     private ResumeMapper resumeMapper;
     @Autowired
     private ResumeWorkExpMapper workExpMapper;
+    @Autowired
+    private ResumeProjectExpMapper projectExpMapper;
 
     @Override
     public void initResume(String userId) {
@@ -151,6 +155,56 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
         workExpMapper.delete(
                 new QueryWrapper<ResumeWorkExp>()
                         .eq("id", workExpId)
+                        .eq("user_id", userId)
+        );
+
+        redis.del(REDIS_RESUME_INFO + ":" + userId);
+    }
+
+    @Transactional
+    @Override
+    public void editProjectExp(EditProjectExpBO projectExpBO) {
+
+        ResumeProjectExp projectExp = new ResumeProjectExp();
+        BeanUtils.copyProperties(projectExpBO, projectExp);
+
+        projectExp.setUpdatedTime(LocalDateTime.now());
+
+        if (StrUtil.isBlank(projectExpBO.getId())) {
+            // 新增
+            projectExp.setCreateTime(LocalDateTime.now());
+            projectExpMapper.insert(projectExp);
+        } else {
+            // 修改
+            projectExpMapper.update(projectExp,
+                    new QueryWrapper<ResumeProjectExp>()
+                            .eq("id", projectExpBO.getId())
+                            .eq("user_id", projectExpBO.getUserId())
+                            .eq("resume_id", projectExpBO.getResumeId())
+            );
+        }
+
+        redis.del(REDIS_RESUME_INFO + ":" + projectExpBO.getUserId());
+    }
+
+
+    @Override
+    public ResumeProjectExp getProjectExp(String projectExpId, String userId) {
+
+        ResumeProjectExp projectExp = projectExpMapper.selectOne(
+                new QueryWrapper<ResumeProjectExp>()
+                        .eq("id", projectExpId)
+                        .eq("user_id", userId)
+        );
+        return projectExp;
+    }
+
+    @Transactional
+    @Override
+    public void deleteProjectExp(String projectExpId, String userId) {
+        projectExpMapper.delete(
+                new QueryWrapper<ResumeProjectExp>()
+                        .eq("id", projectExpId)
                         .eq("user_id", userId)
         );
 

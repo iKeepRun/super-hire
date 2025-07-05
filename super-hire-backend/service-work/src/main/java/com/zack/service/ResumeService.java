@@ -2,9 +2,11 @@ package com.zack.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zack.bo.EditProjectExpBO;
 import com.zack.bo.EditResumeBO;
 import com.zack.bo.EditWorkExpBO;
 import com.zack.domain.Resume;
+import com.zack.domain.ResumeProjectExp;
 import com.zack.domain.ResumeWorkExp;
 import com.zack.vo.ResumeVO;
 import org.springframework.beans.BeanUtils;
@@ -30,4 +32,10 @@ public interface ResumeService {
     public ResumeWorkExp getWorkExp(String workExpId, String userId);
 
     public void deleteWorkExp(String workExpId, String userId);
+
+    public void editProjectExp(EditProjectExpBO projectExpBO);
+
+    public ResumeProjectExp getProjectExp(String projectExpId, String userId);
+
+    public void deleteProjectExp(String projectExpId, String userId);
 }

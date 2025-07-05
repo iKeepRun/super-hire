@@ -2,11 +2,13 @@ package com.zack.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.zack.base.BaseInfoProperties;
+import com.zack.bo.EditProjectExpBO;
 import com.zack.bo.EditResumeBO;
 import com.zack.bo.EditWorkExpBO;
 import com.zack.common.CommonResult;
 import com.zack.common.CommonResult;
-import com.zack.common.GraceJSONResult;
+import com.zack.common.CommonResult;
+import com.zack.domain.ResumeProjectExp;
 import com.zack.domain.ResumeWorkExp;
 import com.zack.service.ResumeService;
 import com.zack.utils.GsonUtils;
@@ -123,6 +125,51 @@ public class ResumeController extends BaseInfoProperties {
         }
 
         resumeService.deleteWorkExp(workExpId, userId);
+
+        return CommonResult.success();
+    }
+
+    /**
+     * 编辑项目经验
+     * @param editResumeBO
+     * @return
+     */
+    @PostMapping("editProjectExp")
+    public CommonResult editProjectExp(@RequestBody @Valid EditProjectExpBO editResumeBO) {
+
+        // TODO EditProjectExpBO 自行校验
+
+        resumeService.editProjectExp(editResumeBO);
+
+        return CommonResult.success();
+    }
+
+    /**
+     * 查询项目经验的详情信息
+     * @param projectExpId
+     * @param userId
+     * @return
+     */
+    @PostMapping("getProjectExp")
+    public CommonResult getProjectExp(String projectExpId, String userId) {
+
+        if (StrUtil.isBlank(projectExpId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("项目经验ID或用户ID不能为空");
+        }
+
+        ResumeProjectExp exp = resumeService.getProjectExp(projectExpId, userId);
+
+        return CommonResult.success(exp);
+    }
+
+    @PostMapping("deleteProjectExp")
+    public CommonResult deleteProjectExp(String projectExpId, String userId) {
+
+        if (StrUtil.isBlank(projectExpId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("项目经验ID或用户ID不能为空");
+        }
+
+        resumeService.deleteProjectExp(projectExpId, userId);
 
         return CommonResult.success();
     }
