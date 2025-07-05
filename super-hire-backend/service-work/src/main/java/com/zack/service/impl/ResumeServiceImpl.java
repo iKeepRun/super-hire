@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author chenzhiqiang
@@ -76,13 +77,13 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
         BeanUtils.copyProperties(resume, resumeVO);
 
         // 2. 查询工作经验
-        // List<ResumeWorkExp> workExpList = WorkExpMapper.selectList(
-        //         new QueryWrapper<ResumeWorkExp>()
-        //                 .eq("user_id", userId)
-        //                 .eq("resume_id", resume.getId())
-        //                 .orderByDesc("begin_date")
-        // );
-        //
+        List<ResumeWorkExp> workExpList = workExpMapper.selectList(
+                new QueryWrapper<ResumeWorkExp>()
+                        .eq("user_id", userId)
+                        .eq("resume_id", resume.getId())
+                        .orderByDesc("begin_date")
+        );
+
         // // 3. 查询项目经验
         // List<ResumeProjectExp> projectExpList = projectExpMapper.selectList(
         //         new QueryWrapper<ResumeProjectExp>()
@@ -100,7 +101,7 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
         // );
         //
         // // 在这里不做多表关联查询，单独查表后再进行组装，避免高并发对数据库的压力
-        // resumeVO.setWorkExpList(workExpList);
+        resumeVO.setWorkExpList(workExpList);
         // resumeVO.setProjectExpList(projectExpList);
         // resumeVO.setEducationList(educationList);
 
@@ -142,6 +143,18 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
                         .eq("user_id", userId)
         );
         return workExp;
+    }
+
+    @Transactional
+    @Override
+    public void deleteWorkExp(String workExpId, String userId) {
+        workExpMapper.delete(
+                new QueryWrapper<ResumeWorkExp>()
+                        .eq("id", workExpId)
+                        .eq("user_id", userId)
+        );
+
+        redis.del(REDIS_RESUME_INFO + ":" + userId);
     }
 }
 

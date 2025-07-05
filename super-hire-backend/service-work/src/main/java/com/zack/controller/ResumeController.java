@@ -108,4 +108,22 @@ public class ResumeController extends BaseInfoProperties {
 
         return CommonResult.success(exp);
     }
+
+    /**
+     * 删除工作经验
+     * @param workExpId
+     * @param userId
+     * @return
+     */
+    @PostMapping("deleteWorkExp")
+    public CommonResult deleteWorkExp(String workExpId, String userId) {
+
+        if (StrUtil.isBlank(workExpId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("工作经验ID或用户ID不能为空");
+        }
+
+        resumeService.deleteWorkExp(workExpId, userId);
+
+        return CommonResult.success();
+    }
 }
