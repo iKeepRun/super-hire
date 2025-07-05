@@ -23,17 +23,18 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
-* @author chenzhiqiang
-* @description 针对表【resume(简历表)】的数据库操作Service实现
-* @createDate 2025-05-10 22:52:49
-*/
+ * @author chenzhiqiang
+ * @description 针对表【resume(简历表)】的数据库操作Service实现
+ * @createDate 2025-05-10 22:52:49
+ */
 @Service
-public class ResumeServiceImpl extends BaseInfoProperties implements ResumeService{
+public class ResumeServiceImpl extends BaseInfoProperties implements ResumeService {
 
     @Autowired
     private ResumeMapper resumeMapper;
     @Autowired
     private ResumeWorkExpMapper workExpMapper;
+
     @Override
     public void initResume(String userId) {
         Resume resume = new Resume();
@@ -130,6 +131,17 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
         }
 
         redis.del(REDIS_RESUME_INFO + ":" + workExpBO.getUserId());
+    }
+
+    @Override
+    public ResumeWorkExp getWorkExp(String workExpId, String userId) {
+
+        ResumeWorkExp workExp = workExpMapper.selectOne(
+                new QueryWrapper<ResumeWorkExp>()
+                        .eq("id", workExpId)
+                        .eq("user_id", userId)
+        );
+        return workExp;
     }
 }
 

@@ -7,6 +7,7 @@ import com.zack.bo.EditWorkExpBO;
 import com.zack.common.CommonResult;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
+import com.zack.domain.ResumeWorkExp;
 import com.zack.service.ResumeService;
 import com.zack.utils.GsonUtils;
 import com.zack.vo.ResumeVO;
@@ -88,5 +89,23 @@ public class ResumeController extends BaseInfoProperties {
         resumeService.editWorkExp(editResumeBO);
 
         return CommonResult.success();
+    }
+
+    /**
+     * 获得工作经验的详情
+     * @param workExpId
+     * @param userId
+     * @return
+     */
+    @PostMapping("getWorkExp")
+    public CommonResult getWorkExp(String workExpId, String userId) {
+
+        if (StrUtil.isBlank(workExpId) || StrUtil.isBlank(userId)) {
+            return CommonResult.error("工作经验ID或用户ID不能为空");
+        }
+
+        ResumeWorkExp exp = resumeService.getWorkExp(workExpId, userId);
+
+        return CommonResult.success(exp);
     }
 }
