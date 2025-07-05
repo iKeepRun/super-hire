@@ -3,8 +3,10 @@ package com.zack.controller;
 import cn.hutool.core.util.StrUtil;
 import com.zack.base.BaseInfoProperties;
 import com.zack.bo.EditResumeBO;
+import com.zack.bo.EditWorkExpBO;
 import com.zack.common.CommonResult;
 import com.zack.common.CommonResult;
+import com.zack.common.GraceJSONResult;
 import com.zack.service.ResumeService;
 import com.zack.utils.GsonUtils;
 import com.zack.vo.ResumeVO;
@@ -73,5 +75,18 @@ public class ResumeController extends BaseInfoProperties {
         }
 
         return CommonResult.success(resumeVO);
+    }
+
+    /**
+     * 新增/编辑工作经验
+     * @param editResumeBO
+     * @return
+     */
+    @PostMapping("editWorkExp")
+    public CommonResult editWorkExp(@RequestBody @Valid EditWorkExpBO editResumeBO) {
+        // TODO EditWorkExpBO 自行校验
+        resumeService.editWorkExp(editResumeBO);
+
+        return CommonResult.success();
     }
 }

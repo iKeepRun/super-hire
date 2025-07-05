@@ -1,14 +1,17 @@
 package com.zack.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zack.base.BaseInfoProperties;
 import com.zack.bo.EditResumeBO;
+import com.zack.bo.EditWorkExpBO;
 import com.zack.domain.Resume;
 import com.zack.domain.ResumeEducation;
 import com.zack.domain.ResumeProjectExp;
 import com.zack.domain.ResumeWorkExp;
 import com.zack.mapper.ResumeMapper;
+import com.zack.mapper.ResumeWorkExpMapper;
 import com.zack.service.ResumeService;
 import com.zack.vo.ResumeVO;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +32,8 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
 
     @Autowired
     private ResumeMapper resumeMapper;
+    @Autowired
+    private ResumeWorkExpMapper workExpMapper;
     @Override
     public void initResume(String userId) {
         Resume resume = new Resume();
@@ -99,6 +104,32 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
         // resumeVO.setEducationList(educationList);
 
         return resumeVO;
+    }
+
+    @Transactional
+    @Override
+    public void editWorkExp(EditWorkExpBO workExpBO) {
+
+        ResumeWorkExp workExp = new ResumeWorkExp();
+        BeanUtils.copyProperties(workExpBO, workExp);
+
+        workExp.setUpdatedTime(LocalDateTime.now());
+
+        if (StrUtil.isBlank(workExp.getId())) {
+            // id为空则新增
+            workExp.setCreateTime(LocalDateTime.now());
+            workExpMapper.insert(workExp);
+        } else {
+            // id不为空则修改
+            workExpMapper.update(workExp,
+                    new QueryWrapper<ResumeWorkExp>()
+                            .eq("id", workExpBO.getId())
+                            .eq("user_id", workExpBO.getUserId())
+                            .eq("resume_id", workExpBO.getResumeId())
+            );
+        }
+
+        redis.del(REDIS_RESUME_INFO + ":" + workExpBO.getUserId());
     }
 }
 
