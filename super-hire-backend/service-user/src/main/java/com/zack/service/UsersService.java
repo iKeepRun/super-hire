@@ -5,6 +5,8 @@ import com.zack.common.CommonPage;
 import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
 
+import java.util.List;
+
 /**
  * @author mczq
  * @description 针对表【users(用户表)】的数据库操作Service
@@ -26,4 +28,6 @@ public interface UsersService {
     void updateUserToCand(String hrUserId);
 
     CommonPage getHRList(String companyId, Integer page, Integer limit);
+
+    public List<Users> getByIds(List<String> userIds);
 }

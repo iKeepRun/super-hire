@@ -93,18 +93,18 @@ public class ResumeServiceImpl extends BaseInfoProperties implements ResumeServi
                         .orderByDesc("begin_date")
         );
         //
-        // // 4. 查询我的教育经历
-        // List<ResumeEducation> educationList = educationMapper.selectList(
-        //         new QueryWrapper<ResumeEducation>()
-        //                 .eq("user_id", userId)
-        //                 .eq("resume_id", resume.getId())
-        //                 .orderByDesc("begin_date")
-        // );
+        // 4. 查询我的教育经历
+        List<ResumeEducation> educationList = educationMapper.selectList(
+                new QueryWrapper<ResumeEducation>()
+                        .eq("user_id", userId)
+                        .eq("resume_id", resume.getId())
+                        .orderByDesc("begin_date")
+        );
         //
         // // 在这里不做多表关联查询，单独查表后再进行组装，避免高并发对数据库的压力
         resumeVO.setWorkExpList(workExpList);
         resumeVO.setProjectExpList(projectExpList);
-        // resumeVO.setEducationList(educationList);
+        resumeVO.setEducationList(educationList);
 
         return resumeVO;
     }

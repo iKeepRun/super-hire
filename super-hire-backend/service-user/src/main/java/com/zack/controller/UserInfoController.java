@@ -3,6 +3,7 @@ package com.zack.controller;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
+import com.zack.bo.SearchBO;
 import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 
@@ -11,11 +12,15 @@ import com.zack.domain.Users;
 import com.zack.dto.ModifyUserDTO;
 import com.zack.inteceptor.JwtCurrentUserInteceptor;
 import com.zack.service.UsersService;
+import com.zack.utils.GsonUtils;
 import com.zack.utils.JWTUtils;
 import com.zack.vo.UsersVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/userinfo")
@@ -162,5 +167,27 @@ public class UserInfoController extends BaseInfoProperties {
         CommonPage gridResult = usersService.getHRList(companyId, page, limit);
 
         return CommonResult.success(gridResult);
+    }
+
+    /**
+     * 根据用户id获得用户列表
+     * @param searchBO
+     * @return
+     */
+    @PostMapping("list/get")
+    public GraceJSONResult getList(@RequestBody SearchBO searchBO) {
+
+        List<Users> userList = usersService.getByIds(searchBO.getUserIds());
+
+        List<UsersVO> userVOList = new ArrayList<>();
+        for (Users u : userList) {
+            UsersVO usersVO = new UsersVO();
+            BeanUtils.copyProperties(u, usersVO);
+            userVOList.add(usersVO);
+        }
+
+        String userListStr = GsonUtils.object2String(userVOList);
+
+        return GraceJSONResult.ok(userListStr);
     }
 }

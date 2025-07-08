@@ -1,9 +1,8 @@
 package com.zack.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+
 import com.zack.common.CommonPage;
 import com.zack.domain.Admin;
-import com.zack.dto.AdminDTO;
 import com.zack.dto.CreateAdminDTO;
 import com.zack.dto.UpdateAdminDTO;
 

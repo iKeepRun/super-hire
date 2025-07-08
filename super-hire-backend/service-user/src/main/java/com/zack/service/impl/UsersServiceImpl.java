@@ -107,4 +107,12 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
         List<Users> users = usersMapper.selectList(new QueryWrapper<Users>().eq("hr_in_which_company_id", companyId));
         return setPage(users,page);
     }
+
+    @Override
+    public List<Users> getByIds(List<String> userIds) {
+        return usersMapper.selectList(
+                new QueryWrapper<Users>()
+                        .in("id", userIds)
+        );
+    }
 }

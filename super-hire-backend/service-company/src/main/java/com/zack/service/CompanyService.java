@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zack.domain.CompanyPhoto;
 import com.zack.vo.CompanyInfoVO;
 
+import java.util.List;
+
 /**
  * @author chenzhiqiang
  * @description 针对表【company(企业表)】的数据库操作Service
@@ -44,4 +46,11 @@ public interface CompanyService {
                       Integer num);
     void savePhotos(ModifyCompanyInfoBO modifyCompanyInfoBO);
     CompanyPhoto getPhotos(String  companyId);
+
+    /**
+     * 根据企业id查询列表
+     * @param companyIds
+     * @return
+     */
+    public List<Company> getByIds(List<String> companyIds);
 }

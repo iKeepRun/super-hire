@@ -212,6 +212,14 @@ public class CompanyServiceImpl extends BaseInfoProperties implements CompanySer
     public CompanyPhoto getPhotos(String companyId) {
         return companyPhotoMapper.selectOne(new QueryWrapper<CompanyPhoto>().eq("company_id", companyId));
     }
+
+    @Override
+    public List<Company> getByIds(List<String> companyIds) {
+        return companyMapper.selectList(
+                new QueryWrapper<Company>()
+                        .in("id", companyIds)
+        );
+    }
 }
 
 

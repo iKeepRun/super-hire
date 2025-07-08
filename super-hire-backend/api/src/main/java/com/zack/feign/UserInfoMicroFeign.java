@@ -1,9 +1,11 @@
 package com.zack.feign;
 
+import com.zack.bo.SearchBO;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -13,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient("user-service")
 public interface UserInfoMicroFeign {
+
+    @PostMapping("/userinfo/list/get")
+    public CommonResult getList(@RequestBody SearchBO searchBO);
+
     @PostMapping("/userinfo/getCountsByCompanyId")
     CommonResult getCountsByCompanyId(
             @RequestParam("companyId") String companyId);
@@ -25,6 +31,7 @@ public interface UserInfoMicroFeign {
 
     @PostMapping("/userinfo/get")
     CommonResult get(@RequestParam("userId") String userId);
+
     @PostMapping("/userinfo/changeUserToHR")
      CommonResult changeUserToHR(@RequestParam("hrUserId") String hrUserId);
 }

@@ -3,10 +3,7 @@ package com.zack.controller;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.zack.base.BaseInfoProperties;
-import com.zack.bo.CreateCompanyBO;
-import com.zack.bo.ModifyCompanyInfoBO;
-import com.zack.bo.QueryCompanyBO;
-import com.zack.bo.ReviewCompanyBO;
+import com.zack.bo.*;
 import com.zack.common.CommonPage;
 import com.zack.common.CommonResult;
 import com.zack.common.GraceJSONResult;
@@ -19,6 +16,7 @@ import com.zack.exceptions.ThrowUtil;
 import com.zack.feign.UserInfoMicroFeign;
 import com.zack.inteceptor.JwtCurrentUserInteceptor;
 import com.zack.service.CompanyService;
+import com.zack.utils.GsonUtils;
 import com.zack.utils.JsonUtils;
 import com.zack.vo.CompanyInfoVO;
 import com.zack.vo.CompanySimpleVO;
@@ -32,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/company")
@@ -363,5 +363,28 @@ public class CompanyController extends BaseInfoProperties {
         redis.del(REDIS_COMPANY_BASE_INFO + ":" + reviewCompanyBO.getCompanyId());
 
         return CommonResult.success();
+    }
+
+    /**
+     * 根据企业id获得企业列表
+     * @param searchBO
+     * @return
+     */
+    @PostMapping("list/get")
+    public CommonResult<String> getList(@RequestBody SearchBO searchBO) {
+
+        List<Company> companyList = companyService.getByIds(searchBO.getCompanyIds());
+
+        List<CompanyInfoVO> companyVOList = new ArrayList<>();
+        for (Company c : companyList) {
+            CompanyInfoVO companyInfoVO = new CompanyInfoVO();
+            BeanUtils.copyProperties(c, companyInfoVO);
+            companyInfoVO.setCompanyId(c.getId());
+            companyVOList.add(companyInfoVO);
+        }
+
+        String companyListStr = GsonUtils.object2String(companyVOList);
+
+        return CommonResult.success(companyListStr);
     }
 }

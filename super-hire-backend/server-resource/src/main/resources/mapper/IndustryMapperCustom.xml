@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zack.mapper.IndustryMapperCustom">
+
     <resultMap id="topIndustryWithThirdList" type="com.zack.vo.TopIndustryWithThirdListVO">
         <id column="topId" property="topId" jdbcType="VARCHAR"/>
         <collection property="thirdIndustryList" ofType="com.zack.domain.Industry">

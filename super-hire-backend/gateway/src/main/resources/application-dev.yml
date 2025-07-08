@@ -23,12 +23,12 @@ spring:
         - id: resourceRouter
           uri: lb://server-resource
           predicates:
-            - Path=/resource/**,/industry/**,/dataDict/**
+            - Path=/resource/**,/industry/**,/dataDict/**,/jobType/**,/sys/**
 
         - id: workRouter
           uri: lb://work-service
           predicates:
-            - Path=/resume/**
+            - Path=/resume/**,/job/**
 
         - id: fileRouter
           uri: lb://file-service

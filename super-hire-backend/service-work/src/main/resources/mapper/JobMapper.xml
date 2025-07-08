@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zack.mapper.JobMapper">
+
+    <resultMap id="BaseResultMap" type="com.zack.domain.Job">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="hrId" column="hr_id" jdbcType="VARCHAR"/>
+            <result property="companyId" column="company_id" jdbcType="VARCHAR"/>
+            <result property="jobName" column="job_name" jdbcType="VARCHAR"/>
+            <result property="jobType" column="job_type" jdbcType="VARCHAR"/>
+            <result property="expYears" column="exp_years" jdbcType="VARCHAR"/>
+            <result property="edu" column="edu" jdbcType="VARCHAR"/>
+            <result property="beginSalary" column="begin_salary" jdbcType="INTEGER"/>
+            <result property="endSalary" column="end_salary" jdbcType="INTEGER"/>
+            <result property="monthlySalary" column="monthly_salary" jdbcType="INTEGER"/>
+            <result property="jobDesc" column="job_desc" jdbcType="VARCHAR"/>
+            <result property="tags" column="tags" jdbcType="VARCHAR"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="violateReason" column="violate_reason" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,hr_id,company_id,
+        job_name,job_type,exp_years,
+        edu,begin_salary,end_salary,
+        monthly_salary,job_desc,tags,
+        city,address,status,
+        violate_reason,create_time,updated_time
+    </sql>
+</mapper>
